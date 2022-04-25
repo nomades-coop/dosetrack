@@ -1,0 +1,22 @@
+@server = http://localhost:8000
+
+GET {{server}}/api/users
+
+###
+
+POST {{server}}/api/users
+
+###
+
+GET {{server}}/api/user/1
+
+###
+
+PUT {{server}}/api/user/1
+
+###
+
+DELETE {{server}}/api/user/1
+
+###
+

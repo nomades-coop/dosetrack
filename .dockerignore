@@ -1,0 +1,10 @@
+**/.dockerignore
+**/target
+docker-compose.yml
+log
+**/log
+../../log
+**/.git
+.vscode-ext
+.vscode-insiders-ext
+.mongo-volume

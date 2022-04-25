@@ -1,0 +1,21 @@
+# Local variables
+@companyId = "abca535261245abfcd4da31a"
+
+### Obtener todos los operators
+GET http://localhost:8000/operators
+
+### Crear un operador nuevo
+
+# @name createOperator
+POST http://localhost:8000/user
+content-type: application/json
+
+{
+  "name": "gonzalo",
+  "last_name": "dominguez",
+  "company_id": {{companyId}},
+  "role": "Admin",
+  "status": "Enabled"
+}
+
+@lastUserId = {{createOperator.response.body.$._id}}

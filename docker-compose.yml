@@ -1,0 +1,28 @@
+version: "3.2"
+
+services:
+  backend:
+    container_name: dosetrack-back
+    image: nomades/dosetrack-backend:latest
+    build: .
+    environment:
+      - MDB_URL=mongodb://db_root:S1lly_PWD!@mongodb:27017/admin
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/dosetrack-ws:/usr/src/myapp
+      - ./.vscode-ext:/root/.vscode-server/extensions
+      - ./.vscode-insiders-ext:/root/.vscode-server-insiders/extensions
+    command: cargo run
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017-27019:27017-27019"
+    volumes:
+      - ./.mongo-volume:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=dosetrack
+      - MONGO_INITDB_ROOT_USERNAME=db_root
+      - MONGO_INITDB_ROOT_PASSWORD=S1lly_PWD!

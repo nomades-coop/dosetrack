@@ -1,0 +1,46 @@
+# Local variables
+@companyId = "abca535261245abfcd4da31a"
+
+### REQUESTS
+
+### Obtener todos los usuarios
+GET http://localhost:8000/users
+
+### Obtener un usuario por su Id
+
+GET http://localhost:8000/user/6265e9645df68091cc16c6bc
+
+### Crear un usuario nuevo
+
+# @name createUser
+POST http://localhost:8000/user
+content-type: application/json
+
+{
+  "name": "Pablo",
+  "last_name": "Centurion",
+  "company_id": {{companyId}},
+  "role": "Admin",
+  "status": "Enabled"
+}
+
+###
+
+@lastUserId = {{createUser.response.body.$._id}}
+
+### Actualizar un usuario
+POST http://localhost:8000/user
+content-type: application/json
+
+{
+  "_id": {{lastUserId}},
+  "name": "Pablo",
+  "last_name": "C.",
+  "company_id": {{companyId}},
+  "role": "Admin",
+  "status": "Enabled"
+}
+
+### Eliminar un usuario
+DELETE http://localhost:8000/user/6266bbe138a6e948659d5f4c
+

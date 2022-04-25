@@ -1,0 +1,19 @@
+[package]
+name = "dosetrack-ws"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bson = { version = "2.1.0", features = ["chrono-0_4"] }
+chrono = "0.4.19"
+dotenv = "0.15.0"
+mongodb = "2.1.0"
+rocket = { version = "0.5.0-rc", features = ["json"] }
+serde = { version = "1.0.136", features = ["derive"] }
+tokio = "1.17.0"
+
+[dev-dependencies]
+lazy_static = "1.4.0"
+serde_json = "1.0.59"
