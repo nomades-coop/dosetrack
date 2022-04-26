@@ -1,21 +1,46 @@
 # Local variables
-@companyId = "abca535261245abfcd4da31a"
+@companyId = abca535261245abfcd4da31a
+@dosimeterId = bdca535261245abfcd11aea3
 
 ### Obtener todos los operators
 GET http://localhost:8000/operators
 
+### Obtener un operador por su Id
+
+GET http://localhost:8000/operator/6265e9645df68091cc16c6bc
+
 ### Crear un operador nuevo
 
 # @name createOperator
-POST http://localhost:8000/user
+POST http://localhost:8000/operator
 content-type: application/json
 
 {
+  "company_id": "{{companyId}}",
   "name": "gonzalo",
-  "last_name": "dominguez",
-  "company_id": {{companyId}},
-  "role": "Admin",
+  "dni": "09876543210",
+  "licence": "221312-213412-222",
+
   "status": "Enabled"
 }
 
+###
 @lastUserId = {{createOperator.response.body.$._id}}
+
+### Actualizar un operator
+POST http://localhost:8000/operator
+content-type: application/json
+
+{
+  "_id": {{lastUserId}},
+  "company_id": "{{companyId}}",
+  "name": "gonzalo",
+  "dni": "09876543210",
+  "licence": "221312-213412-222",
+  "dosimeter_id": "{{dosimeterId}}",
+  "status": "Enabled"
+
+}
+
+###
+

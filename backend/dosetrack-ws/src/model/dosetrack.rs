@@ -56,12 +56,12 @@ impl User {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Operator {
-    pub _id: ObjectId,
+    pub _id: Option<ObjectId>,
     pub company_id: ObjectId,
     pub name: String,
     pub dni: String,
     pub licence: String,
-    pub dosimeter_id: ObjectId,
+    pub dosimeter_id: Option<ObjectId>,
     pub status: OperatorStatus,
 }
 

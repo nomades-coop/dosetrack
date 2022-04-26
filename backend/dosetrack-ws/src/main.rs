@@ -33,7 +33,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 users::create_or_update,
                 users::delete,
                 operators::get_all,
-                operators::get
+                operators::get,
+                operators::create_or_update,
+                operators::delete
             ],
         ) // public pages (blogposts)
         .mount(
