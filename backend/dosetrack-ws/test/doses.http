@@ -1,0 +1,36 @@
+# Local variables
+// La idea sería obtener referencias de los empleados que 
+//se fueron creando en otros test
+
+@operator_id = aaaa535261245abfcd4daaaa
+@dose= 456.0
+@when= 10/04/2022
+@companyId = abca535261245abfcd4da31a
+@dosimeter_id = bdca535261245abfcd11aea3
+
+
+### REQUESTS
+
+### Obtener todas las dosis de la companía
+GET http://localhost:8000/doses/{{companyId}}
+
+### Obtener dosis por operador
+
+GET http://localhost:8000/doses/operator/{{operator_id}}
+
+### Cargar una nueva dosis
+
+# @name createDoses
+POST http://localhost:8000/dose
+content-type: application/json
+
+{
+    
+    "operator_id": "{{operator_id}}",
+    "dosimeter_id": "{{dosimeter_id}}",
+    "dose": {{dose}},
+    "when": "{{when}}",
+    "status": "Enabled"
+}
+
+

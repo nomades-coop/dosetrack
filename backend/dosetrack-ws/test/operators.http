@@ -24,10 +24,9 @@ content-type: application/json
   "status": "Enabled"
 }
 
-###
-@lastUserId = {{createOperator.response.body.$._id}}
 
 ### Actualizar un operator
+@lastUserId = {{createOperator.response.body.$._id}}
 POST http://localhost:8000/operator
 content-type: application/json
 
