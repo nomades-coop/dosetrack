@@ -2,7 +2,7 @@
 // La idea sería obtener referencias de los empleados que 
 //se fueron creando en otros test
 
-@operator_id = aaaa535261245abfcd4daaaa
+@operator_id = 62681a54ae60331bbb5414ae
 @dose= 456.0
 @when= 10/04/2022
 @companyId = abca535261245abfcd4da31a

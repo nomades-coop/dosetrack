@@ -4,6 +4,10 @@ ENV TZ=America/Argentina/Buenos_Aires
 RUN ln -snf /usr/share/zoneinfo/$TZ etc/localtime && \
   echo $TZ > /etc/timezone
 
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt -y install nodejs
+RUN npm install -g npm@8.8.0 
+
 COPY ./backend/dosetrack-ws/. /usr/src/myapp
 
 WORKDIR /usr/src/myapp
