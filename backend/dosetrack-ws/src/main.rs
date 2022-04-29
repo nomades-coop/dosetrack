@@ -39,7 +39,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 doses::get_by_operator,
                 doses::get_by_company,
                 doses::create,
-                //doses:detele?
+                companies::get_all,
+                companies::get,
+                companies::create_or_update,
+                companies::delete,
             ],
         ) // public pages (blogposts)
         .mount(

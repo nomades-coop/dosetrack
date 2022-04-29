@@ -13,7 +13,9 @@ use crate::database::MongoDB;
 use crate::model::BlogEntry;
 use crate::utils::GenericError;
 
+pub mod companies;
 pub mod doses;
+pub mod dosimeters;
 pub mod operators;
 pub mod users;
 

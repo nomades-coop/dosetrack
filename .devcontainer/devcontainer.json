@@ -25,7 +25,8 @@
 		"vadimcn.vscode-lldb",
 		"swellaby.vscode-rust-test-adapter",
 		"humao.rest-client",
-		"mongodb.mongodb-vscode"
+		"mongodb.mongodb-vscode",
+		"svelte.svelte-vscode"
 	]
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

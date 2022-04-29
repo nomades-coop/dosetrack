@@ -9,6 +9,7 @@ services:
       - MDB_URL=mongodb://db_root:S1lly_PWD!@mongodb:27017/admin
     ports:
       - "8000:8000"
+      - "3000:3000"
     volumes:
       - ./backend/dosetrack-ws:/usr/src/myapp
       - ./.vscode-ext:/root/.vscode-server/extensions

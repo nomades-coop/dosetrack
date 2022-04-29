@@ -1,0 +1,45 @@
+# Local variables
+@companyId = abca535261245abfcd4da31a
+@dosimeterId = bdca535261245abfcd11aea3
+
+### Obtener todos las companies
+GET http://localhost:8000/companies
+
+### Obtener una company por su Id
+GET http://localhost:8000/company/6265e9645df68091cc16c6bc
+
+### Crear una company nuevo
+# @name createCompany
+POST http://localhost:8000/company
+content-type: application/json
+
+{
+    "name": "Acme",
+    "status": "Enabled"
+}
+
+
+### Actualizar una company
+@lastUserId = {{createCompany.response.body.$._id}}
+POST http://localhost:8000/company
+content-type: application/json
+
+{
+  "_id": {{lastUserId}},
+  "name": "ACME SA",
+  "operators": [
+    {
+      "company_id": {{lastUserId}},
+      "name": "gonzalo",
+      "dni": "09876543210",
+      "licence": "221312-213412-222",
+
+      "status": "Enabled"      
+    }
+  ],
+  "status": "Enabled"
+
+}
+
+###
+

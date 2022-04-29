@@ -8,6 +8,12 @@ RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt -y install nodejs
 RUN npm install -g npm@8.8.0 
 
+
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
+RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/5.0 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-5.0.list
+RUN apt update
+RUN apt install -y mongodb-mongosh
+
 COPY ./backend/dosetrack-ws/. /usr/src/myapp
 
 WORKDIR /usr/src/myapp

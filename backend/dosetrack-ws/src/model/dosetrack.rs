@@ -67,16 +67,15 @@ pub struct Operator {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Company {
-    pub _id: ObjectId,
+    pub _id: Option<ObjectId>,
     pub name: String,
-    pub users: Vec<User>,
-    pub operators: Vec<Operator>,
+    pub operators: Option<Vec<Operator>>,
     pub status: CompanyStatus,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Dosimeter {
-    pub _id: ObjectId,
+    pub _id: Option<ObjectId>,
     pub brand: String,
     pub model: String,
     pub sn: f32,
