@@ -7,7 +7,7 @@ use mongodb::results::DeleteResult;
 use mongodb::{bson, Cursor};
 
 use crate::database;
-use crate::model::dosetrack::{Operator, OperatorStatus};
+use crate::model::dosetrack::Operator;
 use crate::utils::GenericError;
 use rocket::futures::TryStreamExt;
 
@@ -26,12 +26,26 @@ pub async fn get_all(
   Ok(Json(operators))
 }
 
+#[get("/operators/overdose")]
+pub async fn overdose(
+  database: &State<database::MongoDB>,
+) -> Result<Json<Vec<Operator>>, GenericError> {
+  let collection = database.collection::<Operator>("operators");
+  let mut cursor: Cursor<Operator> = collection.find(None, None).await.unwrap();
+
+  let mut operators: Vec<Operator> = Vec::new();
+  while let Ok(Some(operator)) = cursor.try_next().await {
+    operators.push(operator);
+  }
+
+  Ok(Json(operators))
+}
+
 #[get("/operator/<id>", format = "json")]
 pub async fn get(
   id: String,
   database: &State<database::MongoDB>,
 ) -> Result<Json<Operator>, Json<GenericError>> {
-  dbg!(&id);
   let collection = database.collection::<Operator>("operators");
   let operator = collection
     .find_one(doc! { "_id": ObjectId::parse_str(&id).unwrap() }, None)
@@ -57,17 +71,15 @@ pub async fn create_or_update(
 
   if new_operator._id.is_none() {
     new_operator._id = Some(bson::oid::ObjectId::new());
-    let result = collection.insert_one(new_operator.deref(), None).await;
-    dbg!(result);
+    let _result = collection.insert_one(new_operator.deref(), None).await;
   } else {
-    let result = collection
+    let _result = collection
       .replace_one(
         doc! { "_id":  &new_operator._id },
         new_operator.deref(),
         None,
       )
       .await;
-    dbg!(result);
   }
 
   Ok(Json(new_operator.into_inner()))
@@ -96,9 +108,6 @@ pub async fn delete(
         ))))
       }
     }
-    Err(error) => {
-      dbg!(&error);
-      Err(Json(GenericError::new(&*format!("{:?}", error))))
-    }
+    Err(error) => Err(Json(GenericError::new(&*format!("{:?}", error)))),
   }
 }

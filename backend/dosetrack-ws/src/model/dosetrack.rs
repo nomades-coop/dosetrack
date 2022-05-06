@@ -41,18 +41,18 @@ pub struct User {
     pub status: UserStatus,
 }
 
-impl User {
-    pub fn new() -> Self {
-        Self {
-            _id: None,
-            company_id: ObjectId::new(),
-            name: String::new(),
-            last_name: String::new(),
-            role: UserRole::Operator,
-            status: UserStatus::Disabled,
-        }
-    }
-}
+// impl User {
+//     pub fn new() -> Self {
+//         Self {
+//             _id: None,
+//             company_id: ObjectId::new(),
+//             name: String::new(),
+//             last_name: String::new(),
+//             role: UserRole::Operator,
+//             status: UserStatus::Disabled,
+//         }
+//     }
+// }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Operator {
@@ -76,9 +76,10 @@ pub struct Company {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Dosimeter {
     pub _id: Option<ObjectId>,
+    pub company_id: ObjectId,
     pub brand: String,
     pub model: String,
-    pub sn: f32,
+    pub sn: String,
     pub last_calibration_date: String,
     pub status: DosimeterStatus,
 }

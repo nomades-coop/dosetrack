@@ -1,8 +1,19 @@
 <script>
+	import Router from "svelte-spa-router";
 	import Header from "./components/Header.svelte";
 	import NavBar from "./components/NavBar.svelte";
 	import Dashboard from "./components/Dashboard.svelte";
-	export let name;
+	import Home from "./routes/Home.svelte";
+	import Faq from "./routes/Faq.svelte";
+	import Operator from "./routes/Operator.svelte";
+	import NotFound from "./routes/NotFound.svelte";
+
+	let routes = {
+		"/": Home,
+		"/faq": Faq,
+		"/operator/:id": Operator,
+		"*": NotFound,
+	};
 
 	let person1 = {
 		picture: "pict",
@@ -24,6 +35,7 @@
 	};
 </script>
 
+<Router {routes} />
 <Header loggedIn={isLoggedIn} />
 
 <div class="container-fluid">

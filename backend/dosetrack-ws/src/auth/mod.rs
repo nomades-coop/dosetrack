@@ -53,6 +53,7 @@ pub struct GoogleUserInfo;
 #[derive(Debug)]
 pub struct UserSession(pub String);
 
+#[allow(dead_code)]
 #[derive(Deserialize, Debug)]
 struct GoogleAuthUser {
     sub: String, // Google ID

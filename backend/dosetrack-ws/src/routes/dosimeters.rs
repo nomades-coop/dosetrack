@@ -7,9 +7,10 @@ use mongodb::results::DeleteResult;
 use mongodb::{bson, Cursor};
 
 use crate::database;
-use crate::model::dosetrack::{Dosimeter, DosimeterStatus};
+use crate::model::dosetrack::Dosimeter;
 use crate::utils::GenericError;
 use rocket::futures::TryStreamExt;
+use rocket::response::status;
 
 #[get("/dosimeters")]
 pub async fn get_all(
@@ -31,7 +32,6 @@ pub async fn get(
   id: String,
   database: &State<database::MongoDB>,
 ) -> Result<Json<Dosimeter>, Json<GenericError>> {
-  dbg!(&id);
   let collection = database.collection::<Dosimeter>("dosimeters");
   let dosimeter = collection
     .find_one(doc! { "_id": ObjectId::parse_str(&id).unwrap() }, None)
@@ -52,25 +52,24 @@ pub async fn get(
 pub async fn create_or_update(
   mut new_dosimeter: Json<Dosimeter>,
   database: &State<database::MongoDB>,
-) -> Result<Json<Dosimeter>, GenericError> {
+) -> status::Accepted<Json<Dosimeter>> {
   let collection = database.collection::<Dosimeter>("dosimeters");
 
   if new_dosimeter._id.is_none() {
     new_dosimeter._id = Some(bson::oid::ObjectId::new());
-    let result = collection.insert_one(new_dosimeter.deref(), None).await;
-    dbg!(result);
+    let _result = collection.insert_one(new_dosimeter.deref(), None).await;
   } else {
-    let result = collection
+    let _result = collection
       .replace_one(
         doc! { "_id":  &new_dosimeter._id },
         new_dosimeter.deref(),
         None,
       )
       .await;
-    dbg!(result);
   }
 
-  Ok(Json(new_dosimeter.into_inner()))
+  status::Accepted(Some(Json(new_dosimeter.into_inner())))
+  //Ok(Json(new_dosimeter.into_inner()))
 }
 
 #[delete("/dosimeter/<id>")]
@@ -86,9 +85,9 @@ pub async fn delete(
   match result {
     Ok(oid) => {
       delete_result = collection.delete_one(doc! { "_id": oid }, None).await;
-      let users_deleted = delete_result.unwrap().deleted_count;
-      if users_deleted > 0 {
-        Ok(Json(users_deleted))
+      let records_deleted = delete_result.unwrap().deleted_count;
+      if records_deleted > 0 {
+        Ok(Json(records_deleted))
       } else {
         Err(Json(GenericError::new(&*format!(
           "No se pudo eliminart el dosimetro {}",
@@ -96,9 +95,6 @@ pub async fn delete(
         ))))
       }
     }
-    Err(error) => {
-      dbg!(&error);
-      Err(Json(GenericError::new(&*format!("{:?}", error))))
-    }
+    Err(error) => Err(Json(GenericError::new(&*format!("{:?}", error)))),
   }
 }

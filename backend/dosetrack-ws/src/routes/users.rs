@@ -27,7 +27,6 @@ pub async fn get(
   id: String,
   database: &State<database::MongoDB>,
 ) -> Result<Json<User>, Json<GenericError>> {
-  dbg!(&id);
   let collection = database.collection::<User>("users");
   let user = collection
     .find_one(doc! { "_id": ObjectId::parse_str(&id).unwrap() }, None)
@@ -58,8 +57,7 @@ pub async fn create_or_update(
       role: user.role.clone(),
       status: user.status.clone(),
     };
-    let result = collection.insert_one(&new_user, None).await;
-    dbg!(result);
+    let _result = collection.insert_one(&new_user, None).await;
   } else {
     new_user = User {
       _id: user._id,
@@ -70,10 +68,9 @@ pub async fn create_or_update(
       status: user.status.clone(),
     };
 
-    let result = collection
+    let _result = collection
       .replace_one(doc! { "_id":  &user._id }, &new_user, None)
       .await;
-    dbg!(result);
   }
   //Ok(insert.inserted_id.to_string())
 
@@ -103,9 +100,6 @@ pub async fn delete(
         ))))
       }
     }
-    Err(error) => {
-      dbg!(&error);
-      Err(Json(GenericError::new(&*format!("{:?}", error))))
-    }
+    Err(error) => Err(Json(GenericError::new(&*format!("{:?}", error)))),
   }
 }

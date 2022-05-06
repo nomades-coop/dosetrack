@@ -7,7 +7,7 @@ use mongodb::results::DeleteResult;
 use mongodb::{bson, Cursor};
 
 use crate::database;
-use crate::model::dosetrack::{Company, CompanyStatus};
+use crate::model::dosetrack::Company;
 use crate::utils::GenericError;
 use rocket::futures::TryStreamExt;
 
@@ -31,7 +31,6 @@ pub async fn get(
   id: String,
   database: &State<database::MongoDB>,
 ) -> Result<Json<Company>, Json<GenericError>> {
-  dbg!(&id);
   let collection = database.collection::<Company>("companies");
   let company = collection
     .find_one(doc! { "_id": ObjectId::parse_str(&id).unwrap() }, None)
@@ -57,13 +56,11 @@ pub async fn create_or_update(
 
   if new_company._id.is_none() {
     new_company._id = Some(bson::oid::ObjectId::new());
-    let result = collection.insert_one(new_company.deref(), None).await;
-    dbg!(result);
+    let _result = collection.insert_one(new_company.deref(), None).await;
   } else {
-    let result = collection
+    let _result = collection
       .replace_one(doc! { "_id":  &new_company._id }, new_company.deref(), None)
       .await;
-    dbg!(result);
   }
 
   Ok(Json(new_company.into_inner()))
@@ -92,9 +89,6 @@ pub async fn delete(
         ))))
       }
     }
-    Err(error) => {
-      dbg!(&error);
-      Err(Json(GenericError::new(&*format!("{:?}", error))))
-    }
+    Err(error) => Err(Json(GenericError::new(&*format!("{:?}", error)))),
   }
 }

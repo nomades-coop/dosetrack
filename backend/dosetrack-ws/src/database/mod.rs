@@ -1,4 +1,3 @@
-use crate::model::dosetrack::{User, UserRole, UserStatus};
 use crate::model::BlogEntry;
 use mongodb::bson::{doc, Document};
 use mongodb::options::ClientOptions;
@@ -59,10 +58,9 @@ impl MongoDB {
 
     pub async fn update_blog(&self, blog: &mut BlogEntry) -> mongodb::error::Result<String> {
         let collection = self.database.collection::<BlogEntry>("blogs");
-        let result = collection
+        let _result = collection
             .replace_one(doc! { "_id":  &blog._id }, blog, None)
             .await?;
-        dbg!(result);
         Ok("ok".to_string())
     }
 
@@ -81,24 +79,24 @@ impl MongoDB {
             == 1)
     }
 
-    pub async fn fetch_all_users(&self) -> mongodb::error::Result<Vec<User>> {
-        let collection = self.database.collection::<User>("users");
-        let mut cursor: Cursor<User> = collection.find(None, None).await?;
+    // pub async fn fetch_all_users(&self) -> mongodb::error::Result<Vec<User>> {
+    //     let collection = self.database.collection::<User>("users");
+    //     let mut cursor: Cursor<User> = collection.find(None, None).await?;
 
-        let mut users: Vec<User> = Vec::new();
-        while let Some(user) = cursor.try_next().await? {
-            users.push(user);
-        }
+    //     let mut users: Vec<User> = Vec::new();
+    //     while let Some(user) = cursor.try_next().await? {
+    //         users.push(user);
+    //     }
 
-        Ok(users)
-    }
+    //     Ok(users)
+    // }
 
-    pub async fn add_user(&self, user: &mut User) -> mongodb::error::Result<String> {
-        let collection = self.database.collection::<User>("users");
-        user._id = Some(bson::oid::ObjectId::new());
-        let insert: InsertOneResult = collection.insert_one(user, None).await?;
-        Ok(insert.inserted_id.to_string())
-    }
+    // pub async fn add_user(&self, user: &mut User) -> mongodb::error::Result<String> {
+    //     let collection = self.database.collection::<User>("users");
+    //     user._id = Some(bson::oid::ObjectId::new());
+    //     let insert: InsertOneResult = collection.insert_one(user, None).await?;
+    //     Ok(insert.inserted_id.to_string())
+    // }
 }
 
 pub async fn init() -> AdHoc {

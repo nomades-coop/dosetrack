@@ -2,17 +2,20 @@
 @companyId = abca535261245abfcd4da31a
 @dosimeterId = bdca535261245abfcd11aea3
 
-### Obtener todos los operators
-GET http://localhost:8000/operators
+### Obtener todos los dosimeters
+GET http://localhost:8000/dosimeters
+
+###
+DELETE http://localhost:8000/dosimeter/6272d4752a9df7aeb4bbbb90
 
 ### Obtener un operador por su Id
 
-GET http://localhost:8000/operator/62681c48726191810ba5ae6a
+GET http://localhost:8000/dosimeter/6265e9645df68091cc16c6bc
 
 ### Crear un operador nuevo
 
 # @name createOperator
-POST http://localhost:8000/operator
+POST http://localhost:8000/dosimeter
 content-type: application/json
 
 {

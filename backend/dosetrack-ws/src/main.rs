@@ -11,10 +11,37 @@ use auth::GoogleUserInfo;
 use routes::*;
 use std::error::Error;
 
+use rocket::fairing::{Fairing, Info, Kind};
 use rocket::fs::{relative, FileServer};
+use rocket::http::Header;
+use rocket::http::{ContentType, Method, Status};
 use rocket::shield::Shield;
+use rocket::{Request, Response};
 use rocket_dyn_templates::Template;
 use rocket_oauth2::OAuth2;
+
+pub struct CORS;
+
+#[rocket::async_trait]
+impl Fairing for CORS {
+    fn info(&self) -> Info {
+        Info {
+            name: "Add CORS headers to responses",
+            kind: Kind::Response,
+        }
+    }
+
+    async fn on_response<'r>(&self, _request: &'r Request<'_>, response: &mut Response<'r>) {
+        response.set_header(Header::new(
+            "Access-Control-Allow-Methods",
+            "POST, GET, PATCH, DELETE, OPTIONS",
+        ));
+        response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
+        response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
+        response.set_status(Status::Ok);
+    }
+}
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -23,6 +50,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .attach(database::init().await) // connect to the database
         .attach(OAuth2::<GoogleUserInfo>::fairing("google")) // setup OAuth
         .attach(Template::fairing()) // setup Tera templates
+        .attach(CORS)
         .mount("/", FileServer::from(relative!("/static"))) // serving CSS
         .mount(
             "/",
@@ -43,6 +71,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 companies::get,
                 companies::create_or_update,
                 companies::delete,
+                dosimeters::get_all,
+                dosimeters::get,
+                dosimeters::create_or_update,
+                dosimeters::delete
             ],
         ) // public pages (blogposts)
         .mount(
