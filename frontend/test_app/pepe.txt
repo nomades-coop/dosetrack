@@ -1,0 +1,9 @@
+README.md
+node_modules
+package-lock.json
+package.json
+pepe.txt
+public
+rollup.config.js
+scripts
+src

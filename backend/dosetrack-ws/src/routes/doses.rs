@@ -39,11 +39,6 @@ pub async fn get_by_company(
     doses.push(dose);
   }
   Ok(Json(doses))
-
-  /*match cursor {
-  Some(u) => Ok(Json(u)),
-  None => Err(Json(GenericError::new(&*format!("La compañía no posee Dosis Registradas")))),}
-  */
 }
 
 //  Liste las dosis segun operador
