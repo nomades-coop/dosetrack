@@ -2,21 +2,48 @@ use rocket::serde::json::Json;
 use rocket::State;
 use std::ops::Deref;
 
-use mongodb::bson::{doc, oid::ObjectId};
-use mongodb::results::DeleteResult;
-use mongodb::{bson, Cursor};
+use mongodb::{
+  bson,
+  bson::{doc, oid::ObjectId, DateTime},
+  options::{Collation, FindOptions},
+  results::DeleteResult,
+  Cursor,
+};
 
 use crate::database;
 use crate::model::dosetrack::Operator;
 use crate::utils::GenericError;
 use rocket::futures::TryStreamExt;
 
-#[get("/operators")]
-pub async fn get_all(
+#[get("/operators/<company_id>")]
+pub async fn get_by_company(
+  company_id: String,
   database: &State<database::MongoDB>,
 ) -> Result<Json<Vec<Operator>>, GenericError> {
   let collection = database.collection::<Operator>("operators");
-  let mut cursor: Cursor<Operator> = collection.find(None, None).await.unwrap();
+
+  let col = Collation::builder().locale("es").build();
+
+  let filter = doc! {
+   "company_id": ObjectId::parse_str(&company_id).unwrap(),
+  };
+  let options = FindOptions::builder()
+    .projection(doc! {
+      "_id": 1,
+      "company_id": 1,
+      "name": 1,
+      "dni": 1,
+      "licence": 1,
+      "dosimeter_id": 1,
+      "status":1
+    })
+    .collation(col)
+    .sort(doc! {
+      "name": 1i32
+    })
+    .build();
+
+  let mut cursor: Cursor<Operator> = collection.find(filter, options).await.unwrap();
 
   let mut operators: Vec<Operator> = Vec::new();
   while let Ok(Some(operator)) = cursor.try_next().await {

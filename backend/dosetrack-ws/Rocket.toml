@@ -1,6 +1,9 @@
 [default]
-limits.data-form = "2MiB"
 template_dir = "templates/"
+
+[global.limits]
+forms = 1048576
+json = 1048576
 
 [global.oauth.google]
 provider = "Google"

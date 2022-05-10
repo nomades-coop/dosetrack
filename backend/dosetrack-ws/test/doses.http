@@ -4,19 +4,16 @@
 
 @operator_id = 62681a54ae60331bbb5414ae
 @dose= 456.0
-@when= 10/04/2022
-@companyId = abca535261245abfcd4da31a
+@when=2022-12-31T03:00:00.000Z
+@company_id = abca535261245abfcd4da31a
 @dosimeter_id = bdca535261245abfcd11aea3
 
 
 ### REQUESTS
 
-### Obtener todas las dosis de la companía
-GET http://localhost:8000/doses/{{companyId}}
+### Obtener dosis
+GET http://localhost:8000/dose/{{company_id}}/{{operator_id}}
 
-### Obtener dosis por operador
-
-GET http://localhost:8000/doses/operator/{{operator_id}}
 
 ### Cargar una nueva dosis
 
@@ -24,12 +21,12 @@ GET http://localhost:8000/doses/operator/{{operator_id}}
 POST http://localhost:8000/dose
 content-type: application/json
 
-{
-    
+{    
     "operator_id": "{{operator_id}}",
     "dosimeter_id": "{{dosimeter_id}}",
+    "company_id": "{{company_id}}",
     "dose": {{dose}},
-    "when": "{{when}}",
+    "when": {"$date": "{{when}}"},
     "status": "Enabled"
 }
 

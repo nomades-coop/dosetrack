@@ -20,6 +20,7 @@
       rows: [],
     };
   } else {
+    console.log("content", content);
     let fields = content.headers.map((h) => Object.keys(h)[0]);
 
     content.headers = content.headers
@@ -29,8 +30,6 @@
     content.rows = content.rows
       .map((r) => fields.reduce((o, k) => ({ ...o, [k]: r[k] }), {}))
       .map((r) => Object.entries(r));
-
-    // debugger;
   }
 
   const toObject = (data) => {
@@ -63,47 +62,82 @@
 <div class="row">
   <!-- Operator-->
   <div class="table-responsive">
-    <table class="table table-striped table-hover table-sm">
-      <thead>
-        <tr>
-          {#each content.headers as head}
-            {#if head.type != "_id"}
-              <th scope="col">{head.title}</th>
-            {/if}
-          {/each}
-          <th />
-        </tr>
-      </thead>
-      <tbody>
-        {#each content.rows as row}
-          <tr class="align-middle" data-operator-id={row[0][1].$oid}>
-            {#each row as column, i}
-              {#if content.headers[i].type != "_id"}
-                <td>
-                  {#if content.headers[i].type === "img"}
-                    {column[1]}
-                    <img src="" alt="" />
-                  {:else if content.headers[i].type === "date"}
-                    {new Date(column[1]).toISOString().split("T")[0]}
-                  {:else}
-                    {column[1]}
-                  {/if}
-                </td>
+    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+      <table class="table table-striped table-hover table-sm">
+        <thead>
+          <tr>
+            {#each content.headers as head}
+              {#if head.type != "_id"}
+                <th scope="col">{head.title}</th>
               {/if}
             {/each}
-            <td style="text-align: end">
-              <div class="flex-column">
-                <span class="btn btn-outline-primary" on:click={edit(row)}
-                  ><Icon src={BsPencilFill} /></span
-                >
-                <span class="btn btn-outline-danger" on:click={remove(row)}
-                  ><Icon src={BsTrash2Fill} /></span
-                >
-              </div>
-            </td>
+            <th />
           </tr>
-        {/each}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {#each content.rows as row}
+            <tr class="align-middle" data-operator-id={row[0][1].$oid}>
+              {#each row as column, i}
+                {#if content.headers[i].type != "_id"}
+                  <td>
+                    {#if content.headers[i].type === "img"}
+                      {column[1]}
+                      <img src="" alt="" />
+                    {:else if content.headers[i].type === "date"}
+                      {new Date(column[1]).toISOString().split("T")[0]}
+                    {:else}
+                      {column[1]}
+                    {/if}
+                  </td>
+                {/if}
+              {/each}
+              <td style="text-align: end">
+                <div class="flex-column">
+                  <span class="btn btn-outline-primary" on:click={edit(row)}
+                    ><Icon src={BsPencilFill} /></span
+                  >
+                  <span class="btn btn-outline-danger" on:click={remove(row)}
+                    ><Icon src={BsTrash2Fill} /></span
+                  >
+                </div>
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
+
+<style>
+  .my-custom-scrollbar {
+    position: relative;
+    height: 270px;
+    overflow: auto;
+  }
+  .table-wrapper-scroll-y {
+    display: block;
+  }
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 15px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 5px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(220, 215, 215);
+    border-radius: 5px;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #525050;
+  }
+</style>

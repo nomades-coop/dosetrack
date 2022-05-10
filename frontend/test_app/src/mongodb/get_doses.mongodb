@@ -1,0 +1,37 @@
+// MongoDB Playground
+// Use Ctrl+Space inside a snippet or a string literal to trigger completions.
+
+// The current database to use.
+use('dosetrack');
+
+// Search for documents in the current collection.
+db.getCollection('doses')
+  .find(
+    {
+      company_id: ObjectId("abca535261245abfcd4da31a"),
+      operator_id: ObjectId("62681c48726191810ba5ae6a")
+      /*
+      * Filter
+      * fieldA: value or expression
+      */
+    },
+    {
+      _id: 1,
+      company_id: 1,
+      operator_id: 1,
+      dose: 1,
+      when: 1
+      /*
+      * Projection
+      * _id: 0, // exclude _id
+      * fieldA: 1 // include field
+      */
+    }
+  )
+  .sort({
+    when: 1
+    /*
+    * fieldA: 1 // ascending
+    * fieldB: -1 // descending
+    */
+  });

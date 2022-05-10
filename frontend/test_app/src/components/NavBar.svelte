@@ -36,7 +36,7 @@
       <li class="nav-item">
         <a class="nav-link" href="#/operators" on:click={toggleMenu}>
           <Icon src={FaSolidUsers} color="gray" className="iconito-menu" />
-          Operarios
+          Operadores
         </a>
       </li>
       <li class="nav-item">

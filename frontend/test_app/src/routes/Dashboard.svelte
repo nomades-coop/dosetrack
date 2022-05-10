@@ -3,14 +3,15 @@
   import Section from "../components/Section.svelte";
   import { Chart, registerables } from "chart.js/dist/chart.esm";
   import TableOperators from "../components/TableOperators.svelte";
-  import operators_data from "../operators";
+  import API_URL from "../settings";
 
-  const data = operators_data;
+  let tableData;
+  let company_id = "abca535261245abfcd4da31a";
+
+  let promise = fetchOperators();
 
   onMount(async () => {
     Chart.register(...registerables);
-
-    console.log(data);
 
     const ctx = await document.getElementById("myChart").getContext("2d");
     const myChart = new Chart(ctx, {
@@ -43,6 +44,42 @@
       },
     });
   });
+
+  const content = (list) => {
+    return {
+      headers: [
+        { _id: { title: "", type: "_id" } },
+        { company_id: { title: "", type: "_id" } },
+        { name: { title: "Nombre", type: "str" } },
+        { dni: { title: "DNI", type: "str" } },
+        { licence: { title: "Licencia", type: "str" } },
+        { dosimeter_id: { title: "Dosímetro", type: "_id" } },
+        { status: { title: "Status", type: "str" } },
+      ],
+      rows: tableData,
+    };
+  };
+
+  async function fetchOperators() {
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+    });
+
+    const fetchConfig = {
+      method: "GET",
+      headers: myHeaders,
+      cache: "no-cache",
+    };
+
+    const res = await fetch(`${API_URL}/operators/${company_id}`);
+    tableData = await res.json();
+
+    if (res.ok) {
+      return tableData;
+    } else {
+      throw new Error("No se pudo obtener la lista de dosimetros");
+    }
+  }
 </script>
 
 <Section
@@ -56,6 +93,13 @@
   </div>
 </Section>
 
-<Section title="Operadores con mayor dosis">
-  <TableOperators {data} />
+<Section title="Operadores">
+  {#await promise}
+    Esperando...
+  {:then lista}
+    <TableOperators content={content(lista)} />
+  {:catch error}
+    {error.message}
+    no andó
+  {/await}
 </Section>

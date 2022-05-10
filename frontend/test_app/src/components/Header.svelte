@@ -19,8 +19,12 @@
     <span class="navbar-toggler-icon" />
   </button>
 
+  <h4 class="me-3 mt-1 d-none d-sm-block" style="color: #2acbba;">
+    Ingeniería y servicios Bendini SA
+  </h4>
+
   {#if loggedIn}
-    <UserSession />
+    <!-- <UserSession /> -->
   {:else}
     <div class="navbar-nav">
       <div class="nav-item text-nowrap">

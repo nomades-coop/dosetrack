@@ -1,10 +1,14 @@
-use rocket::futures::TryStreamExt;
+use rocket::futures::TryStreamExt; //lo usa try_next en el cursor
 use rocket::serde::json::Json;
 use rocket::State;
 use std::ops::Deref;
 
-use mongodb::bson::{doc, oid::ObjectId};
-use mongodb::{bson, Cursor};
+use mongodb::{
+  bson,
+  bson::{doc, oid::ObjectId, DateTime},
+  options::FindOptions,
+  Cursor,
+};
 
 use crate::database;
 use crate::model::dosetrack::Dose;
@@ -17,22 +21,35 @@ use crate::utils::GenericError;
 4. Que pasa si se carga mal una dosis o si se creo una que no iba?
 */
 
-//Listar todas las dosis
+//Listar  las dosis
 //TODO: Falta hacer Join entre companies y Doses
 
-#[get("/doses/<company_id>", format = "json")]
-pub async fn get_by_company(
+#[get("/<company_id>/<operator_id>", format = "json")]
+pub async fn get_doses(
   company_id: String,
+  operator_id: String,
   database: &State<database::MongoDB>,
 ) -> Result<Json<Vec<Dose>>, Json<GenericError>> {
   let collection = database.collection::<Dose>("doses");
-  let mut cursor: Cursor<Dose> = collection
-    .find(
-      doc! { "doses_by_company": ObjectId::parse_str(&company_id).unwrap() },
-      None,
-    )
-    .await
-    .unwrap();
+
+  let filter = doc! {
+   "company_id": ObjectId::parse_str(&company_id).unwrap(),
+   "operator_id": ObjectId::parse_str(&operator_id).unwrap(),
+  };
+  let find_options = FindOptions::builder()
+    .projection(doc! {
+      "_id": 1,
+      "company_id": 1,
+      "operator_id": 1,
+      "dose": 1,
+      "when": 1
+    })
+    .sort(doc! {
+      "when": 1
+    })
+    .build();
+
+  let mut cursor: Cursor<Dose> = collection.find(filter, find_options).await.unwrap();
   let mut doses: Vec<Dose> = Vec::new();
 
   while let Ok(Some(dose)) = cursor.try_next().await {
@@ -42,8 +59,7 @@ pub async fn get_by_company(
 }
 
 //  Liste las dosis segun operador
-
-#[get("/doses/operator/<operator_id>", format = "json")]
+#[get("/operator/<operator_id>", format = "json")]
 pub async fn get_by_operator(
   operator_id: String,
   database: &State<database::MongoDB>,
@@ -65,7 +81,7 @@ pub async fn get_by_operator(
 }
 
 // TODO: Modificar el resto de las rutas segun este modelo para no usar clone en las estructuras
-#[post("/dose", format = "json", data = "<new_dosis>")]
+#[post("/", format = "json", data = "<new_dosis>")]
 // ver qué significa data= new_dosis
 pub async fn create(
   mut new_dosis: Json<Dose>,
@@ -75,6 +91,7 @@ pub async fn create(
 
   if new_dosis._id.is_none() {
     new_dosis._id = Some(bson::oid::ObjectId::new());
+    new_dosis.when = DateTime::now();
     let _result = collection.insert_one(new_dosis.deref(), None).await;
   }
 

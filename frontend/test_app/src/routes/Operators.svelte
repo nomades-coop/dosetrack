@@ -13,6 +13,7 @@
   import API_URL from "../settings";
 
   let list = [];
+  let company_id = "abca535261245abfcd4da31a";
 
   let promise = fetchOperators();
 
@@ -31,7 +32,7 @@
   });
 
   async function fetchOperators() {
-    const res = await fetch(`${API_URL}/operators`);
+    const res = await fetch(`${API_URL}/operators/${company_id}`);
     list = await res.json();
 
     if (res.ok) {
@@ -140,7 +141,7 @@
     document.getElementById("modal-save").style.display = "inline-block";
     document.getElementById("operatorModalForm").innerHTML = "Nuevo Operador";
     document.getElementById("formOperator").reset();
-    document.getElementById("company_id").value = "6272d4752a9df7aeb4aaab90";
+    document.getElementById("company_id").value = company_id;
     modal.show();
   };
 
@@ -201,7 +202,7 @@
       content={content(lista)}
     />
   {:catch error}
-    {error.message}
+    <!-- {error.message} -->
   {/await}
   <!-- Button trigger modal -->
   <button
@@ -330,8 +331,8 @@
                 class="form-select"
                 aria-label="Default select example"
               >
-                <option value="Enabled" selected>Enabled</option>
-                <option value="Disabled">Disabled</option>
+                <option value="Enabled" selected>Habilitado</option>
+                <option value="Disabled">Deshabilitado</option>
               </select>
               <div id="statusHelp" class="form-text">Dosimeter status</div>
             </div>

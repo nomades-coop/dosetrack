@@ -3,7 +3,7 @@
 @dosimeterId = bdca535261245abfcd11aea3
 
 ### Obtener todos los operators
-GET http://localhost:8000/operators
+GET http://localhost:8000/operators/{{companyId}}
 
 ### Obtener un operador por su Id
 

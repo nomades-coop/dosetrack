@@ -1,4 +1,6 @@
 use mongodb::bson::oid::ObjectId;
+use mongodb::bson::DateTime;
+// use mongodb::bson::RawArrayBuf;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -87,10 +89,10 @@ pub struct Dosimeter {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Dose {
     pub _id: Option<ObjectId>,
+    pub company_id: ObjectId,
     pub operator_id: ObjectId,
     pub dosimeter_id: ObjectId,
     pub dose: f32,
     pub picture: Option<String>,
-    pub when: String,
-    pub status: OperatorStatus,
+    pub when: DateTime,
 }

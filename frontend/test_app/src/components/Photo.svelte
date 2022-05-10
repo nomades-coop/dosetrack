@@ -75,7 +75,7 @@
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     newPhoto(image_data_url);
-    console.log(image_data_url);
+    // console.log(image_data_url);
   };
 
   const reset = () => {

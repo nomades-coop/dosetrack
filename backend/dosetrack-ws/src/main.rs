@@ -53,6 +53,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .attach(CORS)
         .mount("/", FileServer::from(relative!("/static"))) // serving CSS
         .mount(
+            "/dose",
+            routes![doses::get_doses, doses::get_by_operator, doses::create,],
+        )
+        .mount(
             "/",
             routes![
                 blog_entries,
@@ -60,13 +64,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 users::get,
                 users::create_or_update,
                 users::delete,
-                operators::get_all,
+                operators::get_by_company,
                 operators::get,
                 operators::create_or_update,
                 operators::delete,
-                doses::get_by_operator,
-                doses::get_by_company,
-                doses::create,
                 companies::get_all,
                 companies::get,
                 companies::create_or_update,
