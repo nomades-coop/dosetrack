@@ -1,0 +1,21 @@
+// The current database to use.
+use('dosetrack');
+
+db.getCollection('doses')
+  .find(
+    {
+      company_id: ObjectId("abca535261245abfcd4da31a"),
+      operator_id: ObjectId("62681c48726191810ba5ae6a"),
+      when: {$gte: ISODate("2022-05-09T00:00:00.000Z"), $lt: ISODate("2022-05-09T19:50:00.000Z")}
+    },
+    {
+      _id: 1,
+      company_id: 1,
+      operator_id: 1,
+      dose: 1,
+      when: 1
+    }
+  )
+  .sort({
+    when: 1
+  });

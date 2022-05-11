@@ -12,7 +12,6 @@
     } else {
       menu.classList.add("show");
     }
-    console.log(menu.classList.value);
   };
 </script>
 

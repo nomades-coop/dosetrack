@@ -27,8 +27,6 @@
 
     const res = await fetch(`${API_URL}/dosimeters`);
     dosimeters = await res.json();
-
-    console.log(dosimeters);
   });
 
   async function fetchOperators() {
@@ -137,6 +135,10 @@
   };
 
   const newOperator = () => {
+    errors = {};
+    document.getElementById("token-container").classList.add("d-none");
+    document.getElementById("token").value = "";
+
     document.getElementById("modal-delete").style.display = "none";
     document.getElementById("modal-save").style.display = "inline-block";
     document.getElementById("operatorModalForm").innerHTML = "Nuevo Operador";
@@ -146,6 +148,7 @@
   };
 
   const removeOperator = (event) => {
+    errors = {};
     let operator = event.detail.operator;
 
     console.log("remove", operator);
@@ -153,6 +156,8 @@
     document.getElementById("modal-save").style.display = "none";
 
     document.getElementById("operatorModalForm").innerHTML = "Delete operator";
+    document.getElementById("token-container").classList.remove("d-none");
+    document.getElementById("token").value = operator._id.$oid;
 
     document.getElementById("_id").value = operator._id.$oid;
     document.getElementById("company_id").value = operator.company_id.$oid;
@@ -169,14 +174,18 @@
   };
 
   const editOperator = (event) => {
+    errors = {};
     let operator = event.detail.operator;
 
     document.getElementById("modal-delete").style.display = "none";
     document.getElementById("modal-save").style.display = "inline-block";
 
-    document.getElementById("operatorModalForm").innerHTML = "Edit dosimeter";
+    document.getElementById("operatorModalForm").innerHTML =
+      "Modificar Operador";
 
     document.getElementById("_id").value = operator._id.$oid;
+    document.getElementById("token-container").classList.remove("d-none");
+    document.getElementById("token").value = operator._id.$oid;
     document.getElementById("company_id").value = operator.company_id.$oid;
     document.getElementById("name").value = operator.name;
     document.getElementById("dni").value = operator.dni;
@@ -226,7 +235,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="operatorModalForm">New Dosimeter</h5>
+          <h5 class="modal-title" id="operatorModalForm">New Operator</h5>
           <button
             type="button"
             class="btn-close"
@@ -336,6 +345,24 @@
               </select>
               <div id="statusHelp" class="form-text">Dosimeter status</div>
             </div>
+
+            <div id="token-container" class="mb-3 d-none">
+              <label for="_id" class="form-label">Token</label>
+              <input
+                type="text"
+                class="form-control"
+                id="token"
+                aria-describedby="licencelHelp"
+                disabled
+                readonly
+                style="text-align: center;font-weight: bolder;
+                font-size: 1.5em;"
+              />
+              <div id="licencelHelp" class="form-text">
+                Identificador del operador
+              </div>
+              <FormError err={errors.licence} />
+            </div>
           </div>
           <div class="modal-footer">
             <button
@@ -358,3 +385,10 @@
     </div>
   </div>
 </Section>
+
+<style>
+  .form-label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+</style>

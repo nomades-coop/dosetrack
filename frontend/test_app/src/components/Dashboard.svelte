@@ -57,7 +57,7 @@
 </script>
 
 <Section
-  title="Dashboard!"
+  title="Dashboard"
   subtitle="Trend de radiación absorbida total"
   note="Ultima actualización: 18/08/2022"
   showToolbar=""

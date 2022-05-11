@@ -13,6 +13,8 @@
 
 ### Obtener dosis
 GET http://localhost:8000/dose/{{company_id}}/{{operator_id}}
+###
+GET http://localhost:8000/dose/abca535261245abfcd4da31a/62681c49726191810ba5ae6e
 
 
 ### Cargar una nueva dosis

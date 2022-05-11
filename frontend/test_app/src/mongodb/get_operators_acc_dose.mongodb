@@ -1,0 +1,73 @@
+use('dosetrack');
+
+db.doses
+.aggregate([
+  {$match: {
+    company_id: ObjectId("abca535261245abfcd4da31a"),
+    when: {$gte: ISODate("2022-05-01T00:00:00.000Z"), $lt: ISODate("2022-05-31T00:00:00.000Z")},
+    // "operator.name": "Dominguez, Gonzalo"
+    // operator: {$exists: true}
+  }},  
+  {$project: {
+        _id: 1,
+        company_id: 0,
+        dosimeter_id: 0,
+        picture: 0
+        //adjective_value:'$adjective_value.name',
+  }},  
+  {$lookup:
+    {
+      from: "operators",
+      localField: "operator_id",
+      foreignField: "_id",
+      as: "operator",
+  }},
+  {"$set": {
+    "operator": {"$first": "$operator"},
+  }},       
+  {$group: {
+    _id: {
+      operator: "$operator.name",
+      operator_id: "$operator_id",
+    },
+    dose_acc: {$sum: "$dose"}
+  }},
+ 
+])
+
+
+
+  // let mut c: Cursor<Document> = collection.aggregate(
+  //   [doc! {"$match": {
+  //     "company_id": "ObjectId('abca535261245abfcd4da31a')",
+  //     "when": {"$gte": "ISODate('2022-05-09T00:00:00.000Z')", "$lt": "ISODate('2022-05-09T19:50:00.000Z')"},
+  //     // "operator.name": "Dominguez, Gonzalo"
+  //     // operator: {$exists: true}
+  //   }},  
+  //   doc! {"$project": {
+  //         "_id": 1,
+  //         "company_id": 0,
+  //         "dosimeter_id": 0,
+  //         "picture": 0
+  //         //adjective_value:'$adjective_value.name',
+  //   }},  
+  //   doc! {"$lookup": {
+  //       "from": "operators",
+  //       "localField": "operator_id",
+  //       "foreignField": "_id",
+  //       "as": "operator",
+  //   }},
+  //   doc! {"$set": {
+  //     "operator": {"$first": "$operator"},
+  //   }},
+  //   doc! {"$match": {
+  //     "operator.name": "Dominguez, Gonzalo"
+  //   }},       
+  //   doc! {"$group": {
+  //     "_id": {
+  //       "operator_id": "$operator_id",
+  //       "name": "$operator.name"
+  //     },
+  //     "dose_acc": {"$sum": "$dose"}
+  //   }},  ], 
+  //   None).await.unwrap();

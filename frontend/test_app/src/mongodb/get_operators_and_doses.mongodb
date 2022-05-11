@@ -1,0 +1,34 @@
+use('dosetrack');
+
+db.doses
+.aggregate([
+  {$match: {
+    company_id: ObjectId("abca535261245abfcd4da31a")
+  }},
+  {$project:{
+        operators: 0,
+        company_id: 0,
+        _id: 0,
+        picture: 0
+        //adjective_value:'$adjective_value.name',
+  }},
+  {$lookup:
+    {
+      from: "operators",
+      localField: "operator_id",
+      foreignField: "_id",
+      as: "operator",
+  }},
+  {$lookup:
+    {
+      from: "dosimeters",
+      localField: "dosimeter_id",
+      foreignField: "_id",
+      as: "dosimeter",
+  }},
+  {"$set": {
+    "operator": {"$first": "$operator"},
+    "dosimeter": {"$first": "$dosimeter.brand"},
+  }},  
+],
+).pretty();

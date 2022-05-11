@@ -18,7 +18,7 @@
 		"/faq": Faq,
 		"/operators/": Operators,
 		"/dosimeters/": Dosimeters,
-		"/operator/:id": Operator,
+		"/operator/:company_id/:operator_id": Operator,
 		"/dose/registration": DoseRegistration,
 		"*": NotFound,
 	};

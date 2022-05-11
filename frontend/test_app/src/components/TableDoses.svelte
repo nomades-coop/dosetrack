@@ -1,11 +1,6 @@
 <script>
-  import Icon from "svelte-icons-pack/Icon.svelte";
-  import BsPencilFill from "svelte-icons-pack/bs/BsPencilFill";
-  import BsTrash2Fill from "svelte-icons-pack/bs/BsTrash2Fill";
-  import IoNuclear from "svelte-icons-pack/io/IoNuclear";
   import { createEventDispatcher } from "svelte";
-  import { push, pop, replace } from "svelte-spa-router";
-
+  import moment from "moment";
   export let content = {
     headers: [],
     rows: [],
@@ -22,6 +17,7 @@
       rows: [],
     };
   } else {
+    console.log("content", content);
     let fields = content.headers.map((h) => Object.keys(h)[0]);
 
     content.headers = content.headers
@@ -43,42 +39,22 @@
 
     return obj;
   };
-
-  const edit = (operator) => {
-    // -- hace el dispatch
-    dispatch("edit", {
-      operator: toObject(operator),
-    });
-  };
-
-  const remove = (operator) => {
-    // -- hace el dispatch
-    dispatch("remove", {
-      operator: toObject(operator),
-    });
-  };
-
-  const detail = (operator) => {
-    // -- hace el dispatch
-    operator = toObject(operator);
-    console.log("tableOperators", operator);
-    push(`/operator/${operator.company_id.$oid}/${operator._id.$oid}`);
-  };
 </script>
 
 <div class="row">
   <!-- Operator-->
   <div class="table-responsive">
     <!-- <div class="table-wrapper-scroll-y my-custom-scrollbar"> -->
-    <table class="table table-striped table-hover table-sm">
+    <table class="table table-striped table-hover">
       <thead>
         <tr>
           {#each content.headers as head}
             {#if head.type != "_id"}
-              <th scope="col">{head.title}</th>
+              <th style="text-align: {head.align || 'inherit'}" scope="col"
+                >{head.title}</th
+              >
             {/if}
           {/each}
-          <th />
         </tr>
       </thead>
       <tbody>
@@ -86,33 +62,22 @@
           <tr class="align-middle" data-operator-id={row[0][1].$oid}>
             {#each row as column, i}
               {#if content.headers[i].type != "_id"}
-                <td>
+                <td style="text-align: {content.headers[i].align || 'inherit'}">
                   {#if content.headers[i].type === "img"}
                     {column[1]}
                     <img src="" alt="" />
                   {:else if content.headers[i].type === "date"}
-                    {new Date(column[1]).toISOString().split("T")[0]}
+                    {moment(parseInt(column[1]["$date"]["$numberLong"])).format(
+                      "DD/MM/YYYY HH:mm:ss"
+                    )}
+                  {:else if content.headers[i].type === "obj"}
+                    {column[1][content.headers[i].field]}
                   {:else}
                     {column[1]}
                   {/if}
                 </td>
               {/if}
             {/each}
-
-            <td nowrap style="text-align: end">
-              <div class="flex-column">
-                <span class="btn btn-outline-primary" on:click={detail(row)}>
-                  <Icon src={IoNuclear} /></span
-                >
-                <span
-                  class="btn btn-outline-primary mt-1 mb-1"
-                  on:click={edit(row)}><Icon src={BsPencilFill} /></span
-                >
-                <span class="btn btn-outline-danger" on:click={remove(row)}
-                  ><Icon src={BsTrash2Fill} /></span
-                >
-              </div>
-            </td>
           </tr>
         {/each}
       </tbody>

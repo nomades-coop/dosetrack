@@ -3,6 +3,7 @@
   export let subtitle = "";
   export let note = "";
   export let showToolbar = false;
+  export let slot = "visible";
 </script>
 
 <div
@@ -34,6 +35,8 @@
   {/if}
 </div>
 
-<slot>
-  <p>No hay contenido para mostrar aquí</p>
-</slot>
+{#if slot === "visible"}
+  <slot>
+    <p>No hay contenido para mostrar aquí</p>
+  </slot>
+{/if}

@@ -99,7 +99,7 @@
   };
 </script>
 
-<Section title="Bienvenido a Dosetrack">
+<Section title="Bienvenido a Dosetrack" subtitle={operator.name}>
   {#if !operator}
     <div class="mb-3">
       <label for="name" class="form-label"

@@ -150,9 +150,10 @@
   };
 
   const newDosimeter = () => {
+    errors = {};
     document.getElementById("modal-delete").style.display = "none";
     document.getElementById("modal-save").style.display = "inline-block";
-    document.getElementById("dosimeterModalForm").innerHTML = "New dosimeter";
+    document.getElementById("dosimeterModalForm").innerHTML = "Nuevo Dosímetro";
     document.getElementById("formDosimeter").reset();
     document.getElementById("company_id").value = "6272d4752a9df7aeb4aaab90";
     modal.show();
@@ -183,12 +184,14 @@
   };
 
   const editDosimeter = (event) => {
+    errors = {};
     let dosimeter = event.detail.dosimeter;
 
     document.getElementById("modal-delete").style.display = "none";
     document.getElementById("modal-save").style.display = "inline-block";
 
-    document.getElementById("dosimeterModalForm").innerHTML = "Edit dosimeter";
+    document.getElementById("dosimeterModalForm").innerHTML =
+      "Modificar Dosímetro";
 
     document.getElementById("_id").value = dosimeter._id.$oid;
     document.getElementById("brand").value = dosimeter.brand;
@@ -363,3 +366,10 @@
     </div>
   </div>
 </Section>
+
+<style>
+  .form-label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+</style>

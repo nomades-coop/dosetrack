@@ -5,7 +5,7 @@ use std::ops::Deref;
 
 use mongodb::{
   bson,
-  bson::{doc, oid::ObjectId, DateTime},
+  bson::{doc, oid::ObjectId, DateTime, Document},
   options::FindOptions,
   Cursor,
 };
@@ -29,33 +29,77 @@ pub async fn get_doses(
   company_id: String,
   operator_id: String,
   database: &State<database::MongoDB>,
-) -> Result<Json<Vec<Dose>>, Json<GenericError>> {
+) -> Result<Json<Vec<Document>>, Json<GenericError>> {
   let collection = database.collection::<Dose>("doses");
 
-  let filter = doc! {
-   "company_id": ObjectId::parse_str(&company_id).unwrap(),
-   "operator_id": ObjectId::parse_str(&operator_id).unwrap(),
-  };
-  let find_options = FindOptions::builder()
-    .projection(doc! {
-      "_id": 1,
-      "company_id": 1,
-      "operator_id": 1,
-      "dose": 1,
-      "when": 1
-    })
-    .sort(doc! {
-      "when": 1
-    })
-    .build();
+  let query = vec![
+    doc! {
+        "$match": {
+          "company_id": ObjectId::parse_str(&company_id).unwrap(),
+          "operator_id": ObjectId::parse_str(&operator_id).unwrap(),
+        }
+    },
+    doc! {
+        "$lookup": {
+            "from": "operators",
+            "localField": "operator_id",
+            "foreignField": "_id",
+            "as": "operator"
+        }
+    },
+    doc! {
+        "$lookup": {
+            "from": "dosimeters",
+            "localField": "dosimeter_id",
+            "foreignField": "_id",
+            "as": "dosimeter"
+        }
+    },
+    doc! {
+        "$set": {
+            "operator": {
+                "$first": "$operator"
+            },
+            "dosimeter": {
+                "$first": "$dosimeter"
+            }
+        }
+    },
+  ];
 
-  let mut cursor: Cursor<Dose> = collection.find(filter, find_options).await.unwrap();
-  let mut doses: Vec<Dose> = Vec::new();
+  let mut doses = Vec::new();
+  let mut cursor: Cursor<Document> = collection.aggregate(query, None).await.unwrap();
 
   while let Ok(Some(dose)) = cursor.try_next().await {
     doses.push(dose);
   }
+
   Ok(Json(doses))
+
+  // let filter = doc! {
+  //  "company_id": ObjectId::parse_str(&company_id).unwrap(),
+  //  "operator_id": ObjectId::parse_str(&operator_id).unwrap(),
+  // };
+  // let find_options = FindOptions::builder()
+  //   .projection(doc! {
+  //     "_id": 1,
+  //     "company_id": 1,
+  //     "operator_id": 1,
+  //     "dose": 1,
+  //     "when": 1
+  //   })
+  //   .sort(doc! {
+  //     "when": 1
+  //   })
+  //   .build();
+
+  // let mut cursor: Cursor<Dose> = collection.find(filter, find_options).await.unwrap();
+  // let mut doses: Vec<Dose> = Vec::new();
+
+  // while let Ok(Some(dose)) = cursor.try_next().await {
+  //   doses.push(dose);
+  // }
+  // Ok(Json(doses))
 }
 
 //  Liste las dosis segun operador
@@ -65,6 +109,7 @@ pub async fn get_by_operator(
   database: &State<database::MongoDB>,
 ) -> Result<Json<Vec<Dose>>, Json<GenericError>> {
   let collection = database.collection::<Dose>("doses");
+
   let mut cursor: Cursor<Dose> = collection
     .find(
       doc! { "operator_id": ObjectId::parse_str(&operator_id).unwrap() },
