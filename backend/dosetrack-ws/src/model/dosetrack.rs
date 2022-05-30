@@ -31,6 +31,18 @@ pub enum OperatorStatus {
 pub enum DosimeterStatus {
     Enabled,
     Disabled,
+    InUse,
+    InAnalisis,
+    InCalibration,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub enum DosimeterType {
+    MOSFET,
+    TLD,
+    FILM,
+    QUARTZ,
+    GEIGER,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -64,6 +76,7 @@ pub struct Operator {
     pub dni: String,
     pub licence: String,
     pub dosimeter_id: Option<ObjectId>,
+    pub film_id: Option<ObjectId>,
     pub status: OperatorStatus,
 }
 
@@ -73,6 +86,16 @@ pub struct Company {
     pub name: String,
     pub operators: Option<Vec<Operator>>,
     pub status: CompanyStatus,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Film {
+    pub _id: Option<ObjectId>,
+    pub company_id: ObjectId,
+    pub operator_id: Option<ObjectId>,
+    pub company_code: String,
+    pub period: String,
+    pub status: DosimeterStatus,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -94,5 +117,39 @@ pub struct Dose {
     pub dosimeter_id: ObjectId,
     pub dose: f32,
     pub picture: Option<String>,
+    pub when: DateTime,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub enum OperationType {
+    AddUser,
+    RemoveUser,
+    EditUser,
+    AddDosimeter,
+    RemoveDosimeter,
+    EditDosimeter,
+    AddFilm,
+    RemoveFilm,
+    EditFilm,
+    AddDose,
+    RemoveDose,
+    EditDose,
+    AddCompany,
+    RemoveCompany,
+    EditCompany,
+    AddOperator,
+    RemoveOperator,
+    EditOperator,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Auditrail {
+    pub _id: Option<ObjectId>,
+    pub company_id: Option<ObjectId>,
+    pub operator_id: Option<ObjectId>,
+    pub dosimeter_id: Option<ObjectId>,
+    pub film_id: Option<ObjectId>,
+    pub dose: Option<ObjectId>,
+    pub operation: OperationType,
     pub when: DateTime,
 }
