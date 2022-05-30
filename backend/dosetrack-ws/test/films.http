@@ -1,0 +1,44 @@
+# Local variables
+@operator_id = 62681a54ae60331bbb5414ae
+@companyId = abca535261245abfcd4da31a
+@dosimeterId = bdca535261245abfcd11aea3
+
+### Obtener todos los films
+GET http://localhost:8000/film
+
+### Obtener un operador por su Id
+
+GET http://localhost:8000/film/629549627ce585bd5d33124b
+
+### Crear un operador nuevo
+
+# @name createFilm
+POST http://localhost:8000/film
+content-type: application/json
+
+{
+  "company_id": "{{companyId}}",
+  "operator_id": "{{operator_id}}",
+  "company_code": "123456",
+  "period": "202001",
+  "status": "Enabled"
+}
+
+### Actualizar un film
+@lastFilmId = {{createFilm.response.body.$._id}}
+POST http://localhost:8000/film
+content-type: application/json
+
+{
+  "_id": {{lastFilmId}},
+  "company_id": "{{companyId}}",
+  "operator_id": "{{operator_id}}",
+  "company_code": "123456",
+  "period": "202001",
+  "status": "InUse"
+}
+
+
+
+###
+
