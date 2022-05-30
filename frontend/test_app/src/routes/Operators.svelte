@@ -100,6 +100,7 @@
     const json = await res.json();
     result = JSON.stringify(json);
     console.log(result);
+    promise = fetchOperators();
   };
 
   const validateForm = (data) => {
