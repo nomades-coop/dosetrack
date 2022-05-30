@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+#![allow(unused_variables, unused_imports)]
+
 #[macro_use]
 extern crate rocket;
 
@@ -45,11 +48,9 @@ impl Fairing for CORS {
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    rocket::build()
+    let _rocket = rocket::build()
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
-        .attach(OAuth2::<GoogleUserInfo>::fairing("google")) // setup OAuth
-        .attach(Template::fairing()) // setup Tera templates
         .attach(CORS)
         .mount("/", FileServer::from(relative!("/static"))) // serving CSS
         .mount(
@@ -57,9 +58,17 @@ async fn main() -> Result<(), Box<dyn Error>> {
             routes![doses::get_doses, doses::get_by_operator, doses::create,],
         )
         .mount(
+            "/film",
+            routes![
+                films::create_or_update,
+                films::delete,
+                films::get,
+                films::get_all,
+            ],
+        )
+        .mount(
             "/",
             routes![
-                blog_entries,
                 users::get_all,
                 users::get,
                 users::create_or_update,
@@ -77,27 +86,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 dosimeters::create_or_update,
                 dosimeters::delete
             ],
-        ) // public pages (blogposts)
-        .mount(
-            "/auth",
-            routes![
-                google_login,
-                oauth_via_google,
-                login_success,
-                login_failure,
-                logout
-            ],
-        ) // authentication
-        .mount(
-            "/admin",
-            routes![
-                admin_blog_entries,
-                new_blog,
-                new_blog_post,
-                edit_blog,
-                delete_blog
-            ],
-        ) // administration
+        )
         .launch()
         .await?;
     Ok(())
