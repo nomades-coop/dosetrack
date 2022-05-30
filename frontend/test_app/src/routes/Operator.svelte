@@ -114,7 +114,7 @@
   />
 {/await}
 
-<div class="row">
+<div class="row m-1 m-md-5">
   <canvas id="myChart" class="ratio ratio-16x9 img-fluid" />
 </div>
 
