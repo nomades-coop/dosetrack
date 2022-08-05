@@ -21,6 +21,7 @@ WORKDIR /usr/src/myapp
 RUN rustup component add rust-analysis
 RUN rustup component add rust-src
 RUN rustup component add rls
+RUN rustup component add rustfmt
 
 RUN cargo install cargo-edit
 RUN cargo install cargo-watch
