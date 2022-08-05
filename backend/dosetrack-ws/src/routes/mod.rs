@@ -18,6 +18,7 @@ pub mod doses;
 pub mod dosimeters;
 pub mod films;
 pub mod operators;
+pub mod registration;
 pub mod users;
 
 // // -------------------------- P U B L I C  R O U T E S -------------------------- //

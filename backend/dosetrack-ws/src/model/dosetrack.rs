@@ -46,13 +46,35 @@ pub enum DosimeterType {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Registration {
+    pub company_name: String,
+    pub company_cuit: String,
+    pub user_name: String,
+    pub user_last_name: String,
+    pub user_email: Option<String>,
+}
+
+impl Registration {
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(&self).unwrap()
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct User {
     pub _id: Option<ObjectId>,
     pub company_id: ObjectId,
     pub name: String,
     pub last_name: String,
+    pub email: Option<String>,
     pub role: UserRole,
     pub status: UserStatus,
+}
+
+impl User {
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(&self).unwrap()
+    }
 }
 
 // impl User {
@@ -83,6 +105,7 @@ pub struct Operator {
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Company {
     pub _id: Option<ObjectId>,
+    pub cuit: String,
     pub name: String,
     pub operators: Option<Vec<Operator>>,
     pub status: CompanyStatus,
