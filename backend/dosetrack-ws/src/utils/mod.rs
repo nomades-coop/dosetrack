@@ -1,64 +1,51 @@
-use rocket::http::ContentType;
-use rocket::response::Responder;
-use rocket::{Request, Response};
-use serde::{Deserialize, Serialize};
-use std::fmt::{Display, Formatter};
-use std::{error, io};
+use std::io::Cursor;
 
-#[derive(Debug, Serialize, Deserialize)]
+use rocket::http::{ContentType, Status};
+use rocket::request::Request;
+use rocket::response::{self, Responder, Response};
+
+#[derive(Debug)]
 pub struct GenericError {
-    details: String,
+    status: Status,
+    json: String,
 }
 
 impl GenericError {
-    pub fn new(msg: &str) -> GenericError {
+    pub fn new(status: Status, data: &str) -> GenericError {
         GenericError {
-            details: msg.to_string(),
+            status,
+            json: String::from(data),
         }
     }
 }
 
-impl Display for GenericError {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.details)
+impl<'r> Responder<'r, 'static> for GenericError {
+    fn respond_to(self, request: &Request) -> rocket::response::Result<'static> {
+        Response::build()
+            .header(ContentType::JSON)
+            .status(self.status)
+            .sized_body(self.json.len(), Cursor::new(self.json))
+            .ok()
     }
 }
 
-impl error::Error for GenericError {
-    fn description(&self) -> &str {
-        &self.details
-    }
-}
+// Response::build_from(self.json.respond_to(&request).unwrap())
+// .header(ContentType::JSON)
+// .status(self.status)
+// .ok()
 
-impl<'r> Responder<'r, 'r> for GenericError {
-    fn respond_to(self, _request: &'r Request<'_>) -> rocket::response::Result<'r> {
-        let mut response = Response::build()
-            .header(ContentType::HTML)
-            .status(rocket::http::Status::InternalServerError)
-            .finalize();
+// impl<'r> Responder<'r, 'r> for GenericError {
+//     fn respond_to(self, _request: &'r Request<'_>) -> rocket::response::Result<'r> {
+//         let mut response = Response::build()
+//             .header(ContentType::HTML)
+//             .status(rocket::http::Status::from_code(self.status).unwrap())
+//             .finalize();
 
-        let html = format!(
-            r###"<!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="utf-8">
-                    <title> {0} </title>
-                </head>
-                <body align="center">
-                    <div role="main" align="center">
-                        <h1> {0} </h1>
-                        <p> {1} </p>
-                        <hr />
-                    </div>
-                    <div role="contentinfo" align="center">
-                        <small>Rust Blog Engine</small>
-                    </div>
-                </body>
-                </html>"###,
-            rocket::http::Status::InternalServerError,
-            &*self.details
-        );
-        response.set_sized_body(html.len(), io::Cursor::new(html));
-        Ok(response)
-    }
-}
+//         let json = format!(
+//             r###"{{"status": {0}, "detail": "{1}"}}"###,
+//             self.status, &*self.details
+//         );
+//         response.set_sized_body(json.len(), io::Cursor::new(json));
+//         Ok(response)
+//     }
+// }

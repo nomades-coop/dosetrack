@@ -33,13 +33,17 @@ POST http://localhost:8000/user
 content-type: application/json
 
 {
-  "_id": {{lastUserId}},
+  "_id": "62e2ddf29cb273161249e4e4",
   "name": "Pablo",
   "last_name": "C.",
-  "company_id": {{companyId}},
+  "email": "pcenturion@nuclearis.com",
+  "company_id": "abca535261245abfcd4da31a",
   "role": "Admin",
   "status": "Enabled"
 }
+
+### Buscar usuario por email
+GET http://localhost:8000/user/email/apcenturion@nuclearis.com
 
 ### Eliminar un usuario
 DELETE http://localhost:8000/user/6266bbe138a6e948659d5f4c

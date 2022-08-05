@@ -1,0 +1,18 @@
+POST http://localhost:8000/registration
+content-type: application/json
+
+{
+  
+  "company_name": "Nomades",
+  "company_cuit": "20-12345678-9",
+  "user_name": "pablp",
+  "user_last_name": "centurion",
+  "user_email": "pablo@nomades.com.ar"
+
+}
+
+    # pub company_name: String,
+    # pub company_cuit: String,
+    # pub user_name: String,
+    # pub user_last_name: String,
+    # pub user_email: Option<String>,

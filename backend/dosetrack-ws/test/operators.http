@@ -43,3 +43,4 @@ content-type: application/json
 
 ###
 
+DELETE http://localhost:8000/operator/62691c48726191810ba5ae6a
