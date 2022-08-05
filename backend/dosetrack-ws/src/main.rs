@@ -37,13 +37,20 @@ impl Fairing for CORS {
     async fn on_response<'r>(&self, _request: &'r Request<'_>, response: &mut Response<'r>) {
         response.set_header(Header::new(
             "Access-Control-Allow-Methods",
-            "POST, GET, PATCH, DELETE, OPTIONS",
+            "POST, PUT, HEAD, GET, PATCH, DELETE, OPTIONS",
         ));
         response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
         response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
         response.set_header(Header::new("Access-Control-Allow-Credentials", "true"));
-        response.set_status(Status::Ok);
+        //response.set_status(response.status());
     }
+}
+
+/// Catches all OPTION requests in order
+/// to get the CORS related Fairing triggered.
+#[options("/<_..>")]
+fn all_options() {
+    /* Intentionally left empty */
 }
 
 #[rocket::main]
@@ -51,8 +58,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _rocket = rocket::build()
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
-        .attach(CORS)
         .mount("/", FileServer::from(relative!("/static"))) // serving CSS
+        .mount("/", routes![all_options, registration::new])
         .mount(
             "/dose",
             routes![doses::get_doses, doses::get_by_operator, doses::create,],
@@ -71,6 +78,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
             routes![
                 users::get_all,
                 users::get,
+                users::get_by_email,
                 users::create_or_update,
                 users::delete,
                 operators::get_by_company,
@@ -87,6 +95,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 dosimeters::delete
             ],
         )
+        .attach(CORS)
         .launch()
         .await?;
     Ok(())
