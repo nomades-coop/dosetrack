@@ -1,0 +1,188 @@
+<script>
+  import Section from "../components/Section.svelte";
+  import TableDosimeters from "../components/TableDosimeters.svelte";
+  import TableFilms from "../components/TableFilms.svelte";
+  import DosimeterModal from "../components/DosimeterModal.svelte"
+  import API_URL from "../settings";
+  import {UserStore} from "../store";
+  import FilmModal from "../components/FilmModal.svelte";
+  
+  let dosetrack_user = {};
+  let auth0_user = {};
+  auth0_user = {};
+  UserStore.subscribe((data)=>{
+    dosetrack_user = data.Dosetrack;
+    auth0_user = data.Auth0;
+  })
+  let company_id = dosetrack_user.company_id.$oid;
+
+  let list = [];
+  let dosimeter_modal;
+  let film_modal;
+
+  let promise = fetchDosimeters();
+
+  async function fetchDosimeters() {
+    const myHeaders = new Headers({
+      "Content-Type": "application/json",
+    });
+
+    const fetchConfig = {
+      method: "GET",
+      headers: myHeaders,
+      cache: "no-cache",
+    };
+
+    const resDosimeters = await fetch(`${API_URL}/dosimeters/${company_id}`, fetchConfig);
+    const resFilms = await fetch(`${API_URL}/film/by_company/${company_id}`, fetchConfig);
+    
+    if (resDosimeters.ok && resFilms.ok) {
+      let dosimeters = await resDosimeters.json();
+      let films = await resFilms.json();
+      list = {dosimeters, films}
+      return list;
+    } else {
+      throw new Error("No se pudo obtener la lista de dosimetros");
+    }
+  }
+
+  const newDosimeter = () => {
+    // errors = {};
+    document.getElementById("modal-delete").style.display = "none";
+    document.getElementById("modal-save").style.display = "inline-block";
+    document.getElementById("dosimeterModalForm").innerHTML = "Nuevo Dosímetro";
+    document.getElementById("formDosimeter").reset();
+    document.getElementById("company_id").value = company_id;
+    dosimeter_modal.show();
+  };
+
+  const newFilm = () => {
+    // errors = {};
+    film_modal.reset();
+    film_modal.show();
+  };
+
+  const removeDosimeter = (event) => {
+    errors = {};
+    let dosimeter = event.detail.dosimeter;
+
+    document.getElementById("modal-delete").style.display = "inline-block";
+    document.getElementById("modal-save").style.display = "none";
+
+    document.getElementById("dosimeterModalForm").innerHTML =
+      "Delete dosimeter";
+
+    document.getElementById("_id").value = dosimeter._id.$oid;
+    document.getElementById("brand").value = dosimeter.brand;
+    document.getElementById("model").value = dosimeter.model;
+    document.getElementById("sn").value = dosimeter.sn;
+    document.getElementById("last_calibration_date").value = new Date(
+      dosimeter.last_calibration_date
+    )
+      .toISOString()
+      .substring(0, 10);
+    document.getElementById("status").value = dosimeter.status;
+
+    dosimeter_modal.show();
+  };
+
+  const editDosimeter = (event) => {
+    let dosimeter = event.detail.dosimeter;
+
+    document.getElementById("modal-delete").style.display = "none";
+    document.getElementById("modal-save").style.display = "inline-block";
+
+    document.getElementById("dosimeterModalForm").innerHTML =
+      "Modificar Dosímetro";
+
+    document.getElementById("_id").value = dosimeter._id.$oid;
+    document.getElementById("brand").value = dosimeter.brand;
+    document.getElementById("model").value = dosimeter.model;
+    document.getElementById("sn").value = dosimeter.sn;
+    document.getElementById("last_calibration_date").value = new Date(
+      dosimeter.last_calibration_date
+    )
+      .toISOString()
+      .substring(0, 10);
+    document.getElementById("status").value = dosimeter.status;
+
+    dosimeter_modal.show();
+  };
+
+  const editFilm = (event) => {
+    let film = event.detail.film;
+
+    film_modal.set("Modificar Film", film);
+    film_modal.show();
+  };
+
+  const updateDosimetersList = (dosimeter) => {
+    console.log(dosimeter);
+    promise = fetchDosimeters();
+  }
+
+</script>
+
+
+<Section title="Dosímetros">
+  {#await promise}
+  Esperando...
+  {:then lista}
+  <TableDosimeters
+  on:edit={editDosimeter}
+  on:remove={removeDosimeter}
+  content={lista.dosimeters}
+    />
+    {:catch error}
+    {error.message}
+    no andó
+    {/await}
+    <!-- Button trigger modal -->
+    <button
+    type="button"
+    class="btn btn-success"
+    data-bs-toggle="modal_"
+    data-bs-target="#dosimeterModal"
+    on:click={newDosimeter}
+    >
+    Nuevo dosímetro
+  </button>
+  
+  <DosimeterModal on:updated={updateDosimetersList} {company_id} bind:this={dosimeter_modal}/>
+
+</Section>
+
+
+<Section title="Films">
+  {#await promise}
+    Esperando...
+  {:then lista}
+    <TableFilms
+      on:edit={editFilm}
+      on:remove={removeDosimeter}
+      content={lista.films}
+    />
+  {:catch error}
+    {error.message}
+    no andó
+  {/await}
+  <!-- Button trigger modal -->
+  <button
+    type="button"
+    class="btn btn-success"
+    data-bs-toggle="modal_"
+    data-bs-target="#dosimeterModal"
+    on:click={newFilm}
+  >
+    Nuevo film
+  </button>
+
+  <FilmModal on:updated={updateDosimetersList} {company_id} bind:this={film_modal}/>
+
+</Section>
+<style>
+  .form-label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+</style>

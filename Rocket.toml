@@ -1,0 +1,16 @@
+[default]
+template_dir = "templates/"
+
+[global.limits]
+forms = 1048576
+json = 1048576
+
+[global.oauth.google]
+provider = "Google"
+client_id = "864983175810-agh1ibcm2f0a556t7aeddln4u788c4ja.apps.googleusercontent.com"
+client_secret = "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"
+redirect_uri = "http://localhost:8000/auth/google"
+
+[global]
+secret_key = "w6YGfVU32oxP1e0lgbXd5ihQNC6X8NuEHQENcN7BFeI="
+address = "0.0.0.0"

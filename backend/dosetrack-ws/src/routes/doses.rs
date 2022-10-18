@@ -76,31 +76,6 @@ pub async fn get_doses(
     }
 
     Ok(Json(doses))
-
-    // let filter = doc! {
-    //  "company_id": ObjectId::parse_str(&company_id).unwrap(),
-    //  "operator_id": ObjectId::parse_str(&operator_id).unwrap(),
-    // };
-    // let find_options = FindOptions::builder()
-    //   .projection(doc! {
-    //     "_id": 1,
-    //     "company_id": 1,
-    //     "operator_id": 1,
-    //     "dose": 1,
-    //     "when": 1
-    //   })
-    //   .sort(doc! {
-    //     "when": 1
-    //   })
-    //   .build();
-
-    // let mut cursor: Cursor<Dose> = collection.find(filter, find_options).await.unwrap();
-    // let mut doses: Vec<Dose> = Vec::new();
-
-    // while let Ok(Some(dose)) = cursor.try_next().await {
-    //   doses.push(dose);
-    // }
-    // Ok(Json(doses))
 }
 
 //  Liste las dosis segun operador

@@ -3,6 +3,7 @@ use rocket::State;
 use std::ops::Deref;
 
 use mongodb::bson::{doc, oid::ObjectId};
+use mongodb::options::{Collation, FindOptions};
 use mongodb::results::DeleteResult;
 use mongodb::{bson, Cursor};
 
@@ -13,12 +14,27 @@ use rocket::futures::TryStreamExt;
 use rocket::http::Status;
 use rocket::response::status;
 
-#[get("/dosimeters")]
+#[get("/dosimeters/<company_id>")]
 pub async fn get_all(
+    company_id: String,
     database: &State<database::MongoDB>,
 ) -> Result<Json<Vec<Dosimeter>>, GenericError> {
     let collection = database.collection::<Dosimeter>("dosimeters");
-    let mut cursor: Cursor<Dosimeter> = collection.find(None, None).await.unwrap();
+    let cursor: Cursor<Dosimeter> = collection.find(None, None).await.unwrap();
+
+    let col = Collation::builder().locale("es").build();
+    let filter = doc! {
+     "company_id": ObjectId::parse_str(&company_id).unwrap(),
+    };
+
+    let options = FindOptions::builder()
+        .collation(col)
+        .sort(doc! {
+          "brand": 1
+        })
+        .build();
+
+    let mut cursor: Cursor<Dosimeter> = collection.find(filter, options).await.unwrap();
 
     let mut dosimeters: Vec<Dosimeter> = Vec::new();
     while let Ok(Some(dosimeter)) = cursor.try_next().await {

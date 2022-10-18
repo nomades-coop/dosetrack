@@ -117,8 +117,19 @@ pub struct Film {
     pub company_id: ObjectId,
     pub operator_id: Option<ObjectId>,
     pub company_code: String,
-    pub period: String,
+    pub period: ObjectId,
     pub status: DosimeterStatus,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct Period {
+    // #[serde(rename = "_id", skip_serializing_if = "Option::is_none", flatten)]
+    #[serde(rename = "_id", skip_serializing_if = "Option::is_none")]
+    pub id: Option<ObjectId>,
+    pub company_id: ObjectId,
+    pub period: String,
+    pub start_date: DateTime,
+    pub end_date: DateTime,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -175,4 +186,14 @@ pub struct Auditrail {
     pub dose: Option<ObjectId>,
     pub operation: OperationType,
     pub when: DateTime,
+}
+
+pub enum BlockchainResult {
+    Ok(Dose),
+    Error(String),
+}
+pub trait Blockchainable {
+    fn insert_new_block(&self) -> BlockchainResult;
+    fn get_block_data(&self, address: &String) -> BlockchainResult;
+    fn get_blockchain_status(&self, address: &String) -> BlockchainResult;
 }

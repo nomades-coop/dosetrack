@@ -1,12 +1,25 @@
-FROM rust:1.59
+FROM rust:latest
 
 ENV TZ=America/Argentina/Buenos_Aires
 RUN ln -snf /usr/share/zoneinfo/$TZ etc/localtime && \
   echo $TZ > /etc/timezone
 
+ARG USERNAME=dosetrack
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+RUN apt-get update -y \
+  && apt-get install -y sudo \
+  && groupadd --gid $USER_GID $USERNAME \
+  && useradd --uid $USER_UID --gid $USER_GID -s /bin/bash -m $USERNAME \
+  && usermod -G sudo dosetrack \
+  && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt -y install nodejs
-RUN npm install -g npm@8.8.0 
+RUN npm install -g npm 
 
 
 RUN wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | apt-key add -
@@ -14,6 +27,10 @@ RUN echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mon
 RUN apt update
 RUN apt install -y mongodb-mongosh
 
+RUN mkdir /usr/src/myapp
+RUN chown $USERNAME /usr/src/myapp
+
+USER $USERNAME
 COPY ./backend/dosetrack-ws/. /usr/src/myapp
 
 WORKDIR /usr/src/myapp
@@ -23,7 +40,6 @@ RUN rustup component add rust-src
 RUN rustup component add rls
 RUN rustup component add rustfmt
 
-RUN cargo install cargo-edit
 RUN cargo install cargo-watch
 RUN cargo build
 
@@ -34,5 +50,6 @@ RUN echo 'alias ll="ls -halF"' >> ~/.bashrc
 RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc 
 
 EXPOSE 8000
+EXPOSE 3000
 
 CMD bash

@@ -1,4 +1,5 @@
 use chrono::prelude::*;
+use rocket::futures::StreamExt;
 use rocket::serde::json::json;
 use rocket::serde::json::Json;
 use rocket::State;
@@ -6,13 +7,14 @@ use std::ops::Deref;
 
 use mongodb::{
     bson,
-    bson::{doc, oid::ObjectId, DateTime},
+    bson::{doc, oid::ObjectId, DateTime, Document},
     options::{Collation, FindOptions},
     results::DeleteResult,
     Cursor,
 };
 
 use crate::database;
+use crate::model::dosetrack::Dose;
 use crate::model::dosetrack::Operator;
 use crate::utils::GenericError;
 use rocket::futures::TryStreamExt;
@@ -56,17 +58,57 @@ pub async fn get_by_company(
     (Status::Ok, json!(operators).to_string())
 }
 
-#[get("/operators/overdose")]
-pub async fn overdose(database: &State<database::MongoDB>) -> (Status, String) {
-    let collection = database.collection::<Operator>("operators");
-    let mut cursor: Cursor<Operator> = collection.find(None, None).await.unwrap();
+#[get("/operators/overdose/<company_id>")]
+pub async fn overdose(company_id: String, database: &State<database::MongoDB>) -> (Status, String) {
+    let pipeline = vec![
+        doc! {
+            "$match": {
+                "company_id": ObjectId::parse_str(&company_id).unwrap(),
+                "when": {"$gte": "ISODate('2022-05-01T00:00:00.000Z')"}
+            }
+        },
+        doc! {
+            "$group": {
+                "_id": "$operator_id",
+                "totalDosis": {
+                    "$sum": "$dose"
+                }
+            }
+        },
+        doc! {
+            "$lookup": {
+                "from": "operators",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "operator"
+              }
+        },
+        doc! {
+            "$unwind": {
+                "path": "$operator"
+            }
+        },
+        doc! {
+            "$sort": {
+                "totalDose": -1
+            }
+        },
+    ];
 
-    let mut operators: Vec<Operator> = Vec::new();
-    while let Ok(Some(operator)) = cursor.try_next().await {
-        operators.push(operator);
+    let collection = database.collection::<Dose>("doses");
+    let mut cursor = collection.aggregate(pipeline, None).await.unwrap();
+    // get total items in cursor
+    // let total = cursor.count().await;
+    // println!("Comientza el while {}", total);
+
+    let mut documents: Vec<Document> = Vec::new();
+
+    // fill operators vector with cursor data
+    while let Ok(Some(result)) = cursor.try_next().await {
+        documents.push(bson::from_document(result).unwrap());
     }
 
-    (Status::Ok, json!(operators).to_string())
+    (Status::Ok, json!(documents).to_string())
 }
 
 #[get("/operator/<id>", format = "json")]

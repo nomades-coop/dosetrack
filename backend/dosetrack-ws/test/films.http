@@ -4,7 +4,7 @@
 @dosimeterId = bdca535261245abfcd11aea3
 
 ### Obtener todos los films
-GET http://localhost:8000/film
+GET http://localhost:8000/film/by_company/62eca328d27242b672f375f3
 
 ### Obtener un operador por su Id
 

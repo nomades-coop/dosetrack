@@ -2,7 +2,8 @@ use rocket::serde::json::Json;
 use rocket::State;
 use std::ops::Deref;
 
-use mongodb::bson::{doc, oid::ObjectId};
+use mongodb::bson::{doc, oid::ObjectId, Document};
+use mongodb::options::{Collation, FindOptions};
 use mongodb::results::DeleteResult;
 use mongodb::{bson, Cursor};
 
@@ -13,12 +14,39 @@ use rocket::futures::TryStreamExt;
 use rocket::http::Status;
 use rocket::response::status;
 
-#[get("/")]
-pub async fn get_all(database: &State<database::MongoDB>) -> Result<Json<Vec<Film>>, GenericError> {
+#[get("/by_company/<company_id>")]
+pub async fn get_all(
+    company_id: String,
+    database: &State<database::MongoDB>,
+) -> Result<Json<Vec<Document>>, GenericError> {
     let collection = database.collection::<Film>("films");
-    let mut cursor: Cursor<Film> = collection.find(None, None).await.unwrap();
 
-    let mut films: Vec<Film> = Vec::new();
+    let col = Collation::builder().locale("es").build();
+    let query = vec![
+        doc! {
+            "$match": {
+              "company_id": ObjectId::parse_str(&company_id).unwrap(),
+            }
+        },
+        doc! {
+            "$lookup": {
+                "from": "operators",
+                "localField": "operator_id",
+                "foreignField": "_id",
+                "as": "operator"
+            }
+        },
+        doc! {
+            "$unwind": {
+                "path": "$operator",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+    ];
+
+    let mut films = Vec::new();
+    let mut cursor: Cursor<Document> = collection.aggregate(query, None).await.unwrap();
+
     while let Ok(Some(film)) = cursor.try_next().await {
         films.push(film);
     }

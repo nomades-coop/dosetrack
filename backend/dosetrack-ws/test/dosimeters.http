@@ -3,7 +3,7 @@
 @dosimeterId = bdca535261245abfcd11aea3
 
 ### Obtener todos los dosimeters
-GET http://localhost:8000/dosimeters
+GET http://localhost:8000/dosimeters/6272d4752a9df7aeb4aaab90
 
 ###
 DELETE http://localhost:8000/dosimeter/6272d4752a9df7aeb4bbbb90

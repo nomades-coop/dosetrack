@@ -1,26 +1,43 @@
-use rocket::serde::json;
-use rocket::serde::json::json;
-use rocket::serde::json::Json;
-use rocket::State;
+use rocket::{
+    futures::TryStreamExt,
+    futures::{FutureExt, StreamExt},
+    http::Status,
+    serde::json,
+    serde::json::{json, Json},
+    State,
+};
 use rocket_http::uri::fmt::UriDisplay;
+
+use mongodb::{
+    bson,
+    bson::{doc, oid::ObjectId},
+    options::{Collation, FindOptions},
+    results::DeleteResult,
+    Cursor,
+};
 
 use crate::database;
 use crate::model::dosetrack::User;
-use mongodb::bson::{doc, oid::ObjectId};
-use mongodb::results::DeleteResult;
-use mongodb::{bson, Cursor};
-use rocket::futures::TryStreamExt;
-use rocket::http::Status;
 
-#[get("/users")]
-pub async fn get_all(database: &State<database::MongoDB>) -> (Status, String) {
+#[get("/users/<company_id>")]
+pub async fn get_all(company_id: String, database: &State<database::MongoDB>) -> (Status, String) {
     let collection = database.collection::<User>("users");
-    let mut cursor: Cursor<User> = collection.find(None, None).await.unwrap();
+    let col = Collation::builder().locale("es").build();
 
-    let mut users: Vec<User> = Vec::new();
-    while let Ok(Some(user)) = cursor.try_next().await {
-        users.push(user);
-    }
+    let filter = doc! {
+     "company_id": ObjectId::parse_str(&company_id).unwrap(),
+    };
+    let options = FindOptions::builder()
+        .collation(col)
+        .sort(doc! {
+          "name": 1i32
+        })
+        .build();
+
+    let cursor: Cursor<User> = collection.find(filter, options).await.unwrap();
+    let users = cursor.try_collect().await.unwrap_or_else(|_| vec![]);
+
+    //let mut users: Vec<Result<User, _>> = cursor.collect().await;
 
     let json = json!(users).to_string();
     (Status::Ok, json)
@@ -43,15 +60,20 @@ pub async fn get(id: String, database: &State<database::MongoDB>) -> (Status, St
 #[get("/user/email/<email>", format = "json")]
 pub async fn get_by_email(email: String, database: &State<database::MongoDB>) -> (Status, String) {
     let collection = database.collection::<User>("users");
-    let user = collection
-        .find_one(doc! { "email": email }, None)
-        .await
-        .unwrap();
+    let user = collection.find_one(doc! { "email": email }, None).await;
 
     match user {
-        Some(u) => (Status::Ok, json::to_string(&u).unwrap()),
-        None => (Status::NotFound, "{}".to_owned()),
+        Ok(Some(u)) => (Status::Ok, u.to_json()),
+        Ok(None) => (Status::NotFound, "{}".to_owned()),
+        Err(e) => (Status::InternalServerError, e.to_string()),
     }
+    // .await
+    // .unwrap_or(None);
+
+    // match user {
+    //     Some(u) => (Status::Ok, json::to_string(&u).unwrap()),
+    //     None => (Status::NotFound, "{}".to_owned()),
+    // }
 }
 
 #[post("/user", format = "json", data = "<user>")]

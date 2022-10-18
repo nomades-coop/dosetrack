@@ -18,6 +18,7 @@ pub mod doses;
 pub mod dosimeters;
 pub mod films;
 pub mod operators;
+pub mod periods;
 pub mod registration;
 pub mod users;
 

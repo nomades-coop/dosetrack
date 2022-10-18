@@ -74,6 +74,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
             ],
         )
         .mount(
+            "/period",
+            routes![
+                periods::create_or_update,
+                periods::delete,
+                periods::get,
+                periods::get_by_company,
+            ],
+        )
+        .mount(
             "/",
             routes![
                 users::get_all,
@@ -82,6 +91,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 users::create_or_update,
                 users::delete,
                 operators::get_by_company,
+                operators::overdose,
                 operators::get,
                 operators::create_or_update,
                 operators::delete,

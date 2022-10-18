@@ -4,7 +4,7 @@
 ### REQUESTS
 
 ### Obtener todos los usuarios
-GET http://localhost:8000/users
+GET http://localhost:8000/users/62eca328d27242b672f375f3
 
 ### Obtener un usuario por su Id
 
@@ -43,7 +43,7 @@ content-type: application/json
 }
 
 ### Buscar usuario por email
-GET http://localhost:8000/user/email/apcenturion@nuclearis.com
+GET http://localhost:8000/user/email/pcenturion@nuclearis.com
 
 ### Eliminar un usuario
 DELETE http://localhost:8000/user/6266bbe138a6e948659d5f4c

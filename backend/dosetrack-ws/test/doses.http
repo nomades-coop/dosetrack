@@ -33,3 +33,6 @@ content-type: application/json
 }
 
 
+###
+
+GET http://localhost:8000/operators/overdose/abca535261245abfcd4da31a

@@ -5,23 +5,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch via NPM",
+      "type": "chrome",
       "request": "launch",
-      "runtimeArgs": [
-        "run",
-        "dev"
-      ],
-      "runtimeExecutable": "npm",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "type": "node"
+      "name": "Frontend Debug",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/frontend/test_app/src",
     },
     {
       "type": "lldb",
       "request": "launch",
-      "name": "Debug",
-      "program": "${workspaceRoot}/backend/dosetrack-ws/target/debug/dosetrack-ws",
+      "name": "Backend Debug",
+      "program": "${workspaceRoot}/target/debug/dosetrack-api",
       "args": [],
       "cwd": "${workspaceRoot}/backend/dosetrack-ws/"
     }

@@ -1,4 +1,8 @@
 {
   "editor.tabSize": 2,
-  "files.autoSave": "onWindowChange"
+  "files.autoSave": "onWindowChange",
+  "editor.inlayHints.enabled": "offUnlessPressed",
+  "workbench.colorCustomizations": {
+    "tab.activeBorder": "#ff0000"
+  }
 }
