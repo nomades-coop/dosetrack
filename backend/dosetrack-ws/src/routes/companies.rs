@@ -17,6 +17,7 @@ pub async fn get_all(
     database: &State<database::MongoDB>,
 ) -> Result<Json<Vec<Company>>, GenericError> {
     let collection = database.collection::<Company>("companies");
+
     let mut cursor: Cursor<Company> = collection.find(None, None).await.unwrap();
 
     let mut companies: Vec<Company> = Vec::new();

@@ -20,7 +20,7 @@ pub async fn get_all(
     database: &State<database::MongoDB>,
 ) -> Result<Json<Vec<Dosimeter>>, GenericError> {
     let collection = database.collection::<Dosimeter>("dosimeters");
-    let cursor: Cursor<Dosimeter> = collection.find(None, None).await.unwrap();
+    //let cursor: Cursor<Dosimeter> = collection.find(None, None).await.unwrap();
 
     let col = Collation::builder().locale("es").build();
     let filter = doc! {

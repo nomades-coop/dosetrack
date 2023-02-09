@@ -7,7 +7,7 @@
 @when=2022-12-31T03:00:00.000Z
 @company_id = 62eca328d27242b672f375f3
 @dosimeter_id = bdca535261245abfcd11aea3
-
+@period = 631fbae2a38db0d5d29ac2b5
 
 ### REQUESTS
 
@@ -19,17 +19,17 @@ GET http://localhost:8000/dose/abca535261245abfcd4da31a/62681c49726191810ba5ae6e
 
 ### Cargar una nueva dosis
 
-# @name createDoses
-POST http://localhost:8000/dose
+# @name create Film Doses
+POST http://localhost:8000/film_dose
 content-type: application/json
 
 {    
-    "operator_id": "{{operator_id}}",
-    "dosimeter_id": "{{dosimeter_id}}",
     "company_id": "{{company_id}}",
-    "dose": {{dose}},
-    "when": {"$date": "{{when}}"},
-    "status": "Enabled"
+    "operator_id": "{{operator_id}}",
+    "code": "FILM01",
+    "dose": 1.41,
+    "period_id": "{{period}}"
+    
 }
 
 

@@ -16,6 +16,7 @@ use crate::utils::GenericError;
 pub mod companies;
 pub mod doses;
 pub mod dosimeters;
+pub mod film_dose;
 pub mod films;
 pub mod operators;
 pub mod periods;

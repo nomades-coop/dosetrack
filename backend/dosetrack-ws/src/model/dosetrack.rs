@@ -1,6 +1,7 @@
 use mongodb::bson::oid::ObjectId;
 use mongodb::bson::DateTime;
 // use mongodb::bson::RawArrayBuf;
+use rust_decimal::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -119,6 +120,16 @@ pub struct Film {
     pub company_code: String,
     pub period: ObjectId,
     pub status: DosimeterStatus,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct FilmDose {
+    pub _id: Option<ObjectId>,
+    pub company_id: ObjectId,
+    pub operator_id: Option<ObjectId>,
+    pub code: String,
+    pub period_id: ObjectId,
+    pub dose: Decimal,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

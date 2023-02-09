@@ -74,6 +74,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
             ],
         )
         .mount(
+            "/film_dose",
+            routes![film_dose::create, film_dose::get_film_doses,],
+        )
+        .mount(
             "/period",
             routes![
                 periods::create_or_update,
