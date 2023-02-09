@@ -41,6 +41,11 @@ pub async fn get_doses(
             }
         },
         doc! {
+            "$project": {
+              "picture": 0,
+            }
+        },
+        doc! {
             "$lookup": {
                 "from": "operators",
                 "localField": "operator_id",

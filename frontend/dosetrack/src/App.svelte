@@ -17,13 +17,15 @@
   import {getUser, newUser} from  "./services/users";
 	import { onMount } from "svelte";
   import Loader from "./components/Loader.svelte";
-  import ExternalApi from "./routes/ExternalApi.svelte";
   import { useAuth0 } from "./services/auth0";
   import {UserStore} from "./store";
   import Users from "./routes/Users.svelte";
   import API_URL from "./settings";
   import FormError from "./components/FormError.svelte";
   import Films from "./routes/Films.svelte";
+
+  import { SvelteToast } from '@zerodevx/svelte-toast'
+  const toast_options = {}
 
   let {
     auth0Client,
@@ -118,6 +120,7 @@
 {/if}
 
 {#if !$isLoading}
+<SvelteToast {toast_options} />
 <Header/>
 <div class="container-fluid">
 	<div class="row">
@@ -165,3 +168,13 @@
 	</div>
 </div>
 {/if}
+
+<style>
+  :root {
+    --toastBorderRadius: 0.5rem;
+    --toastBorder: 1px solid #000;
+    --toastColor: #000;
+    --toastBackground: #f4f1f1;
+    --toastContainerRight: 1rem;
+  }
+</style>

@@ -2,9 +2,16 @@
   import { onMount } from "svelte";
   import Section from "../components/Section.svelte";
   import TableOperatorsDasboard from "../components/TableOperatorsDasboard.svelte";
+  import PeriodViewer from '../components/PeriodViewer.svelte'
+
   import API_URL from "../settings";
   import {UserStore} from "../store";
- 
+  import {Decimal} from 'decimal.js';
+
+  // creates an array with 1.7 decimal value 33 times
+  let doses = Array.from({length: 33}, () => new Decimal(1.7));
+
+  let totalDoses = doses.reduce((acc, dose) => new Decimal(acc).add(dose), 0).toFixed();
 
   let dosetrack_user = {};
   let auth0_user = {};
@@ -63,7 +70,7 @@
 <Section title="Operadores en situación crítica!" showToolbar="">
   <div class="alert alert-danger d-flex justify-content-between" role="alert">
     <span class="dosis-op">Centurión, Pablo</span>
-    <span class="dosis">456 <span style="font-size: 12pt;">mSv</span> </span>
+    <span class="dosis">{totalDoses} <span style="font-size: 12pt;">mSv</span> </span>
   </div>
 
 </Section>

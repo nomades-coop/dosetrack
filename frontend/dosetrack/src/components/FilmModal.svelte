@@ -28,6 +28,7 @@
   const dispatch = createEventDispatcher();
 
   onMount(async () => {
+    // console.log(company_id);
     modal = new bootstrap.Modal("#filmModal");
     maskOptions = {
       mask: 'YYYY-MM',

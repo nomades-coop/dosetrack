@@ -1,6 +1,6 @@
 <script>
   import { debug } from "svelte/internal";
-
+  import EditableColumn from "./editable_column.svelte";
 
   export let columns = [{
     class: '',
@@ -12,34 +12,48 @@
     }
   }]
 
-  let edit_mode = true
-  let edit_row = 3
+  let editable = false
 
   const editRow = (e) => {
     let tr = e.target.closest('tr');
 
-    [...tr.children].forEach( (td, i)=>{ console.log(i)} );
+    //[...tr.children].forEach( (td, i)=>{ console.log(i)} );
 
-
-  }
-
-  const valueType = (col) =>{
-    col["value"]
+    editable = !editable
 
   }
   
+  const column_changed = (e) => {
+    alert(e.detail)
+  }
+
 </script>
 
 <tr>
+
   {#each columns as col, i }
-    <td id="{i}" class='{col["class"]}' style='{col["style"]}'>{valueType(col)}</td>
+    <EditableColumn col={col} editable={editable} on:columnChanged={column_changed}/>
   {/each}
   <td>
-    <button on:click={editRow}>E</button>
-    <button>OK</button>
+    <button class="btn btn-xxs btn-danger hidden-button" on:click={editRow}>E</button>
   </td>
+
 </tr>  
 
 <style>
-  
+
+  .btn-xxs {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
+      padding: 0;
+  }
+
+  .hidden-button {
+      opacity:0;
+  }
+
+  tr:hover .hidden-button {
+      opacity:1;
+  }
 </style>

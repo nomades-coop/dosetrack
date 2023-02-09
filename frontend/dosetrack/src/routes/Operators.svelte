@@ -3,7 +3,7 @@
   import Section from "../components/Section.svelte";
   import TableOperators from "../components/TableOperators.svelte";
   import { onMount } from "svelte";
-  import {
+  import { 
     isDateRule,
     isRequiredRule,
     setError,
@@ -12,7 +12,11 @@
   } from "../validations";
   import API_URL from "../settings";
   import {UserStore} from "../store";
-  
+  import {operators_by_company} from "../services/operators";
+  import {getDosimetersByCompany} from "../services/dosimeter";	
+
+  import { toast } from '@zerodevx/svelte-toast'
+
   let dosetrack_user = {};
   let auth0_user = {};
   auth0_user = {};
@@ -30,33 +34,22 @@
   let result;
   let modal;
   let dosimeters = [];
+  let token;
+  let tokenInput;
 
   onMount(async () => {
     modal = new bootstrap.Modal("#operatorModal");
+    dosimeters = await fetchDosimeters(company_id);
+    
 
-    dosimeters = await fetchDosimeters(company_id)
   });
 
   async function fetchDosimeters(company_id) {
-    const res = await fetch(`${API_URL}/dosimeters/${company_id}`);
-    
-    if (res.ok) {
-      let list = await res.json();
-      return list;
-    } else {
-      throw new Error("No se pudo obtener la lista de dosimetros");
-    }
+    return await getDosimetersByCompany(company_id);
   }
 
   async function fetchOperators() {
-    const res = await fetch(`${API_URL}/operators/${company_id}`);
-    
-    if (res.ok) {
-      list = await res.json();
-      return list;
-    } else {
-      throw new Error("No se pudo obtener la lista de operadores");
-    }
+    return await operators_by_company(company_id);
   }
 
   const onSubmit = (e) => {
@@ -219,6 +212,27 @@
     document.getElementById("status").value = operator.status;
     modal.show();
   };
+
+  const copyToken = () => {
+    const token = document.getElementById("token").value;
+    
+    if (!navigator.clipboard) {
+      token.select()
+      token.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+    } else {
+      navigator.clipboard.writeText(token).then(() => {
+          toast.push('¡Token copiado al portapapeles!');
+          console.log("Async: Copying to clipboard was successful!");
+        },
+        (err) => {
+          console.error("Async: Could not copy text: ", err);
+        }
+      );
+    }
+
+  };
+
 </script>
 
 <Section title="Operadores">
@@ -372,14 +386,17 @@
                 type="text"
                 class="form-control"
                 id="token"
-                aria-describedby="licencelHelp"
-                disabled
+                bind:value={token}
+                bind:this={tokenInput}
+                on:click={copyToken}
                 readonly
+                aria-describedby="licencelHelp"
+                
                 style="text-align: center;font-weight: bolder;
                 font-size: 1.5em;"
               />
               <div id="licencelHelp" class="form-text">
-                Identificador del operador
+                Identificador del operador (Click para copiar)
               </div>
               <FormError err={errors.licence} />
             </div>
@@ -388,10 +405,10 @@
             <button
               type="button"
               class="btn btn-secondary"
-              data-bs-dismiss="modal">Close</button
+              data-bs-dismiss="modal">Cerrar</button
             >
             <button type="submit" id="modal-save" class="btn btn-primary"
-              >Save</button
+              >Guardar</button
             >
             <button
               type="button"
@@ -410,5 +427,20 @@
   .form-label {
     margin-bottom: 0.5rem;
     font-weight: bold;
+  }
+
+  #token:focus {
+      color: #292521;
+      background-color: #43ec61;
+      border-color: #ff8777;
+      outline: 0;
+      box-shadow: 0 0 0 0.25rem #0dfd3163;
+  }
+
+  input[readonly], #token{
+    color: #000000;
+    background-color: #d1ffd0;
+    cursor: copy;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
   }
 </style>
