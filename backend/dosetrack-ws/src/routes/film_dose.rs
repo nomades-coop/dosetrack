@@ -59,7 +59,7 @@ pub async fn get_film_doses(
 
 #[post("/", format = "json", data = "<new_dosis>")]
 // ver qué significa data= new_dosis
-pub async fn create(
+pub async fn create_or_update(
     mut new_dosis: Json<FilmDose>,
     database: &State<database::MongoDB>,
 ) -> Result<Json<FilmDose>, GenericError> {
@@ -67,7 +67,20 @@ pub async fn create(
 
     if new_dosis._id.is_none() {
         new_dosis._id = Some(bson::oid::ObjectId::new());
-        let _result = collection.insert_one(new_dosis.deref(), None).await;
+        _ = collection.insert_one(new_dosis.deref(), None).await;
+    } else {
+        let result = collection
+            .replace_one(doc! { "_id":  &new_dosis._id }, new_dosis.deref(), None)
+            .await
+            .unwrap()
+            .modified_count;
+
+        if result == 0 {
+            return Err(GenericError::new(
+                Status::NotFound,
+                &*format!("Film Dose {} no encontrado", new_dosis._id.unwrap()),
+            ));
+        }
     }
 
     Ok(Json(new_dosis.into_inner()))

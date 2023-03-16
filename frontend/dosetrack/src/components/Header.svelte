@@ -3,7 +3,6 @@
   import Icon from "svelte-icons-pack/Icon.svelte";
   import RiSystemMenuFill from "svelte-icons-pack/ri/RiSystemMenuFill";
   const { user, isAuthenticated } = useAuth0;
-  
 </script>
 
 <header
@@ -27,9 +26,10 @@
   </button>
 
   {#if $isAuthenticated}
-  <h4 class="me-3 mt-1 d-none d-sm-block" style="color: rgb(94 94 94);">
-    {$user.given_name} {$user.family_name}
-  </h4>
+    <h4 class="me-3 mt-1 d-none d-sm-block" style="color: rgb(94 94 94);">
+      {$user.given_name}
+      {$user.family_name}
+    </h4>
   {/if}
 
   <!-- <input

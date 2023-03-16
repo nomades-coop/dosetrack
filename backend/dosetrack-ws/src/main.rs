@@ -58,7 +58,10 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _rocket = rocket::build()
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
-        .mount("/", FileServer::from(relative!("/static"))) // serving CSS
+        .mount(
+            "/",
+            FileServer::from(relative!("../../frontend/dosetrack/public")),
+        )
         .mount("/", routes![all_options, registration::new])
         .mount(
             "/dose",
@@ -75,7 +78,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         )
         .mount(
             "/film_dose",
-            routes![film_dose::create, film_dose::get_film_doses,],
+            routes![film_dose::create_or_update, film_dose::get_film_doses,],
         )
         .mount(
             "/period",

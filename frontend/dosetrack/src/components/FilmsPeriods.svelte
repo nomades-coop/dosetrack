@@ -6,7 +6,9 @@
   import Icon from "svelte-icons-pack";
   import { getFilmsByCompany } from "../services/films";
   import {UserStore} from "../store";
+  import API_URL from "../settings";
 
+  export let company = null;
   export let year = new Date().getFullYear();
   export let operators = [];
 
@@ -53,7 +55,7 @@
   // send table row as json to server
   async function saveFilm(film) {
     console.log(film);
-    let response = await fetch('/film_dose', {
+    let response = await fetch(`${API_URL}/film_dose`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -89,7 +91,7 @@
         <td><h3><span class="badge bg-primary">{operator.name}</span></h3> </td>
         <!-- <td style="min-width:150px"><FilmSelector {films} minimal={true}/></td> -->
 
-        <td style="min-width:150px"><input type="text" class="form-control" value="AKM997"></td>
+        <td style="min-width:150px"><input id="{company}{operator._id.$oid}" type="text" class="form-control" value="AKM997"></td>
         <td style="min-width:5em"> <input id="coso" type="text" class="form-control number" value="0.00"> </td>
         <td style="min-width:5em"> <input type="text" class="form-control number" value="0.00"> </td>
         <td style="min-width:5em"> <input type="text" class="form-control number" value="0.00"> </td>

@@ -127,7 +127,7 @@ pub struct FilmDose {
     pub _id: Option<ObjectId>,
     pub company_id: ObjectId,
     pub operator_id: Option<ObjectId>,
-    pub code: String,
+    pub film_id: Option<ObjectId>,
     pub period_id: ObjectId,
     pub dose: Decimal,
 }

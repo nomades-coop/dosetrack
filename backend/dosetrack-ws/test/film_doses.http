@@ -7,15 +7,14 @@
 @when=2022-12-31T03:00:00.000Z
 @company_id = 62eca328d27242b672f375f3
 @dosimeter_id = bdca535261245abfcd11aea3
-@period = 631fbae2a38db0d5d29ac2b5
+@period_id = 631fbae2a38db0d5d29ac2b5
+@film_id = 6316705ac265ae52d4d64717
+
 
 ### REQUESTS
 
-### Obtener dosis
-GET http://localhost:8000/dose/{{company_id}}/{{operator_id}}
-###
-GET http://localhost:8000/dose/abca535261245abfcd4da31a/62681c49726191810ba5ae6e
-
+### Obtener dosis de films
+GET http://localhost:8000/film_dose/{{company_id}}/{{operator_id}}
 
 ### Cargar una nueva dosis
 
@@ -23,12 +22,12 @@ GET http://localhost:8000/dose/abca535261245abfcd4da31a/62681c49726191810ba5ae6e
 POST http://localhost:8000/film_dose
 content-type: application/json
 
-{    
+{   "_id": "63e6511d9c3d54e194457bd3",
     "company_id": "{{company_id}}",
     "operator_id": "{{operator_id}}",
-    "code": "FILM01",
-    "dose": 1.41,
-    "period_id": "{{period}}"
+    "film_id": "{{film_id}}",
+    "dose": 1.55,
+    "period_id": "{{period_id}}"
     
 }
 

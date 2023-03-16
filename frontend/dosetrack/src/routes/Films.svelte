@@ -38,4 +38,4 @@
   });
 </script>
 
-<FilmsPeriods {operators} year="2050"/>
+<FilmsPeriods company={company_id} {operators} year="2050"/>
