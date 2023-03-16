@@ -49,4 +49,4 @@ RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc
 
 EXPOSE 3000
 
-CMD bash
+CMD /usr/src/myapp/target/release/dosetrack-api
