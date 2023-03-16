@@ -32,14 +32,12 @@ WORKDIR /usr/src/myapp/frontend/dosetrack
 RUN npm install
 RUN npm run build
 
-WORKDIR /usr/src/myapp/backend/dosetrack-ws
+WORKDIR /usr/src/myapp/
 
 RUN rustup component add rust-analysis
 RUN rustup component add rust-src
 RUN rustup component add rls
 RUN rustup component add rustfmt
-
-RUN cargo install cargo-watch
 RUN cargo build --release
 
 RUN echo 'alias l="ls -CF"' >> ~/.bashrc 

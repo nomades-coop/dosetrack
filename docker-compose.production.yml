@@ -1,0 +1,47 @@
+version: "3.2"
+
+services:
+  # frontend:
+  #   container_name: dosetrack-front
+  #   image: node:latest
+  #   user: node
+  #   working_dir: /home/node/app
+  #   environment:
+  #     - MDB_URL=mongodb://db_root:S1lly_PWD!@mongodb:27017/admin
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./frontend/dosetrack:/home/node/app
+  #     - ./.vscode-ext:/root/.vscode-server/extensions
+  #     - ./.vscode-insiders-ext:/root/.vscode-server-insiders/extensions
+  #   # command: npm run dev
+  #   command: /bin/sh -c "while sleep 1000; do :; done"
+  #   depends_on:
+  #     - backend
+
+  dosetrack-prod:
+    container_name: dosetrack
+    image: nomades/dosetrack-prod:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MDB_URL=${MDB_URL}
+      - ROCKET_SECRET_KEY=${ROCKET_SECRET_KEY}
+      - ROCKET_ADDRESS=${ROCKET_ADDRESS}
+      - ROCKET_PORT=3000
+      - ROCKET_LOG_LEVEL=debug
+      - AUTH0_DOMAIN=${AUTH0_DOMAIN}
+      - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
+      - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
+      - API_SERVER_URL=${API_SERVER_URL}
+    ports:
+      - "8000:8000"
+      - "3000:3000"
+    volumes:
+      # - ./backend/dosetrack-ws:/usr/src/myapp
+      - .:/usr/src/myapp
+      - ./.vscode-ext:/root/.vscode-server/extensions
+      - ./.vscode-insiders-ext:/root/.vscode-server-insiders/extensions
+    # command: cargo run
+    # command: /bin/sh -c "while sleep 1000; do :; done"
