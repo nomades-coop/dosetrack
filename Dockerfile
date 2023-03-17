@@ -44,5 +44,6 @@ RUN echo 'alias ll="ls -halF"' >> ~/.bashrc
 RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc 
 
 EXPOSE 80
+EXPOSE 443
 
 CMD /app/dosetrack-api
