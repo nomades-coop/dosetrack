@@ -34,11 +34,10 @@ services:
       - AUTH0_DOMAIN=${AUTH0_DOMAIN}
       - AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID}
       - AUTH0_AUDIENCE=${AUTH0_AUDIENCE}
-      - API_SERVER_URL=${API_SERVER_URL}
+      - API_SERVER_URL=http://localhost
       - FRONTEND_PATH=/app/frontend/dosetrack/public
     ports:
-      - "8000:8000"
-      - "3000:80"
+      - "80:80"
     volumes:
       # - ./backend/dosetrack-ws:/usr/src/myapp
       - .:/usr/src/myapp

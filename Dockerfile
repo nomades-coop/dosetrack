@@ -22,28 +22,28 @@ ARG AUTH0_AUDIENCE
 ARG API_SERVER_URL
 ARG FRONTEND_PATH
 
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt -y install nodejs
-RUN npm install -g npm 
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+  apt -y install nodejs && \
+  npm install -g npm 
 
 RUN mkdir -p /app
 COPY . /app
 
 WORKDIR /app/frontend/dosetrack
-RUN npm install
-RUN npm run build
+RUN npm install && npm run build
+
 
 WORKDIR /app/
 
-RUN wget -q https://github.com/nomades-coop/dosetrack/releases/download/v0.1.0/dosetrack-api
-RUN chmod +x dosetrack-api
+RUN wget -q https://github.com/nomades-coop/dosetrack/releases/download/v0.1.0/dosetrack-api && \
+  chmod +x dosetrack-api
 
-RUN echo 'alias l="ls -CF"' >> ~/.bashrc 
-RUN echo 'alias la="ls -A"' >> ~/.bashrc 
-RUN echo 'alias ll="ls -halF"' >> ~/.bashrc 
-RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc 
+RUN echo 'alias l="ls -CF"' >> ~/.bashrc && \
+  echo 'alias la="ls -A"' >> ~/.bashrc && \
+  echo 'alias ll="ls -halF"' >> ~/.bashrc && \
+  echo 'alias ls="ls --color=auto"' >> ~/.bashrc 
 
 EXPOSE 80
 EXPOSE 443
 
-CMD /app/dosetrack-api
+# CMD /app/dosetrack-api
