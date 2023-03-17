@@ -38,10 +38,9 @@ services:
       - FRONTEND_PATH=/app/frontend/dosetrack/public
     ports:
       - "80:80"
-    volumes:
+    # volumes:
       # - ./backend/dosetrack-ws:/usr/src/myapp
-      - .:/usr/src/myapp
-      - ./.vscode-ext:/root/.vscode-server/extensions
-      - ./.vscode-insiders-ext:/root/.vscode-server-insiders/extensions
+      # - .:/usr/src/myapp
+
     # command: cargo run
     # command: /bin/sh -c "while sleep 1000; do :; done"
