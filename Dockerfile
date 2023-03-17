@@ -43,6 +43,6 @@ RUN echo 'alias la="ls -A"' >> ~/.bashrc
 RUN echo 'alias ll="ls -halF"' >> ~/.bashrc 
 RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc 
 
-EXPOSE 3000
+EXPOSE 80
 
 CMD /app/dosetrack-api
