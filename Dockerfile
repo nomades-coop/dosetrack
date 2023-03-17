@@ -4,10 +4,6 @@ ENV TZ=America/Argentina/Buenos_Aires
 RUN ln -snf /usr/share/zoneinfo/$TZ etc/localtime && \
   echo $TZ > /etc/timezone
 
-ARG USERNAME=dosetrack
-ARG USER_UID=1000
-ARG USER_GID=1000
-
 # Backend
 ARG ROCKET_LOG_LEVEL=critical
 ARG ROCKET_SECRET_KEY
