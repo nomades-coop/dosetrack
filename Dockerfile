@@ -20,25 +20,23 @@ ARG AUTH0_DOMAIN
 ARG AUTH0_CLIENT_ID
 ARG AUTH0_AUDIENCE
 ARG API_SERVER_URL
+ARG FRONTEND_PATH
 
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt -y install nodejs
 RUN npm install -g npm 
 
-RUN mkdir /usr/src/myapp
-COPY . /usr/src/myapp
+RUN mkdir -p /app
+COPY . /app
 
-WORKDIR /usr/src/myapp/frontend/dosetrack
+WORKDIR /app/frontend/dosetrack
 RUN npm install
 RUN npm run build
 
-WORKDIR /usr/src/myapp/
+WORKDIR /app/
 
-RUN rustup component add rust-analysis
-RUN rustup component add rust-src
-RUN rustup component add rls
-RUN rustup component add rustfmt
-RUN cargo build --release
+RUN wget -q https://github.com/nomades-coop/dosetrack/releases/download/v0.1.0/dosetrack-api
+RUN chmod +x dosetrack-api
 
 RUN echo 'alias l="ls -CF"' >> ~/.bashrc 
 RUN echo 'alias la="ls -A"' >> ~/.bashrc 
@@ -47,4 +45,4 @@ RUN echo 'alias ls="ls --color=auto"' >> ~/.bashrc
 
 EXPOSE 3000
 
-CMD /usr/src/myapp/target/release/dosetrack-api
+CMD /app/dosetrack-api

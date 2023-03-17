@@ -22,7 +22,7 @@ use rocket::shield::Shield;
 use rocket::{Request, Response};
 use rocket_dyn_templates::Template;
 use rocket_oauth2::OAuth2;
-
+use std::env;
 pub struct CORS;
 
 #[rocket::async_trait]
@@ -55,13 +55,15 @@ fn all_options() {
 
 #[rocket::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let frontend_path = match env::var("FRONTEND_PATH") {
+        Ok(v) => v.to_string(),
+        Err(_) => format!("Error loading env variable FRONTEND_PATH"),
+    };
+
     let _rocket = rocket::build()
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
-        .mount(
-            "/",
-            FileServer::from(relative!("../../frontend/dosetrack/public")),
-        )
+        .mount("/", FileServer::from(frontend_path))
         .mount("/", routes![all_options, registration::new])
         .mount(
             "/dose",
