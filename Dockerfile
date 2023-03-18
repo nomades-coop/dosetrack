@@ -41,10 +41,11 @@ WORKDIR /app/frontend/dosetrack
 RUN npm install && npm run build
 
 
-WORKDIR /app/
+WORKDIR /app
+RUN cargo build --release
 
-RUN wget -q https://github.com/nomades-coop/dosetrack/releases/download/v0.1.0/dosetrack-api && \
-  chmod +x dosetrack-api
+# RUN wget -q https://github.com/nomades-coop/dosetrack/releases/download/v0.1.0/dosetrack-api && \
+#   chmod +x dosetrack-api
 
 RUN echo 'alias l="ls -CF"' >> ~/.bashrc && \
   echo 'alias la="ls -A"' >> ~/.bashrc && \
@@ -54,4 +55,4 @@ RUN echo 'alias l="ls -CF"' >> ~/.bashrc && \
 EXPOSE 80
 EXPOSE 443
 EXPOSE 8000
-CMD /app/dosetrack-api
+CMD /app/target/release/dosetrack-api
