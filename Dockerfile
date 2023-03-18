@@ -54,4 +54,8 @@ RUN echo 'alias l="ls -CF"' >> ~/.bashrc && \
 EXPOSE 80
 EXPOSE 443
 EXPOSE 8000
-CMD /app/dosetrack-api
+
+CMD cd frontend/dosetrack/ && \ 
+  npm run build && \
+  cd /app && \
+  /app/dosetrack-api
