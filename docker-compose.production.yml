@@ -38,9 +38,9 @@ services:
       - FRONTEND_PATH=/app/frontend/dosetrack/public
     ports:
       - "80:80"
-    # volumes:
+    volumes:
       # - ./backend/dosetrack-ws:/usr/src/myapp
-      # - .:/usr/src/myapp
+      - .:/app
 
     # command: cargo run
-    # command: /bin/sh -c "while sleep 1000; do :; done"
+    command: /bin/sh -c "while sleep 1000; do :; done"
