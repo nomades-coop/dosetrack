@@ -9,7 +9,7 @@
   class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow-sm"
   style="background-color: #eeeeee !important"
 >
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#/dashboard"
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#/"
     ><img src="./dosetrack-01.svg" alt="" style="height: 2.6em;" /></a
   >
   <button
