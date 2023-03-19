@@ -72,6 +72,8 @@
       if (dosetrack_user) {
         // console.log('Dosetrack User', dosetrack_user)
       } else {
+        let registration_form = document.getElementById("registration_form");
+        registration_form.classList.remove("visually-hidden");
         console.log(
           `Dosetrack database does not have a user with this email ${$user["email"]}`
         );
@@ -130,43 +132,45 @@
         {#if $isAuthenticated && dosetrack_user}
           <Router {routes} />
         {:else}
-          {#if $isAuthenticated}
-            <Section
-              title="Bienvenido {$user.name}"
-              subtitle="Registrarme como operador"
-            >
-              <div class="mb-3">
-                <label for="name" class="form-label"
-                  >Por favor ingrese su token de indentificación</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  name="token"
-                  id="token"
-                  aria-describedby="nameHelp"
-                />
-                <div id="nameHelp" class="form-text">
-                  El token se lo debe proporcionar su empleador.
+          <div id="registration_form" class="visually-hidden">
+            {#if $isAuthenticated}
+              <Section
+                title="Bienvenido {$user.name}"
+                subtitle="Registrarme como operador"
+              >
+                <div class="mb-3">
+                  <label for="name" class="form-label"
+                    >Por favor ingrese su token de indentificación</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="token"
+                    id="token"
+                    aria-describedby="nameHelp"
+                  />
+                  <div id="nameHelp" class="form-text">
+                    El token se lo debe proporcionar su empleador.
+                  </div>
+                  <FormError err={errors.token} />
                 </div>
-                <FormError err={errors.token} />
-              </div>
 
-              <div class="text-center">
-                <button on:click={setOperator} class="btn btn-primary btn-lg"
-                  >Ingresar como operador</button
-                >
-              </div>
-            </Section>
-            <Section
-              title="Nueva Empresa"
-              subtitle="Registrar mi empresa y mi usuario como administrador"
-            >
-              <NewCompany />
-            </Section>
-          {/if}
-          <div class="row p-5">
-            <AuthenticationButton />
+                <div class="text-center">
+                  <button on:click={setOperator} class="btn btn-primary btn-lg"
+                    >Ingresar como operador</button
+                  >
+                </div>
+              </Section>
+              <Section
+                title="Nueva Empresa"
+                subtitle="Registrar mi empresa y mi usuario como administrador"
+              >
+                <NewCompany />
+              </Section>
+            {/if}
+            <div class="row p-5">
+              <AuthenticationButton />
+            </div>
           </div>
         {/if}
       </main>
