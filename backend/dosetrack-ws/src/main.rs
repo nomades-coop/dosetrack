@@ -64,7 +64,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
         .mount("/", FileServer::from(frontend_path))
-        .mount("/", routes![all_options, registration::new])
+        .mount("/", routes![registration::new])
         .mount(
             "/dose",
             routes![doses::get_doses, doses::get_by_operator, doses::create,],

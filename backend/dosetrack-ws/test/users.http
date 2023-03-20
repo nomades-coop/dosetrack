@@ -7,7 +7,7 @@
 GET http://localhost:8000/users/62eca328d27242b672f375f3
 
 ###
-GET http://localhost:3000/user/email/pablushka@gmail.com/'
+GET http://localhost:8000/user/email/pablushka@gmail.com
 
 ### Obtener un usuario por su Id
 GET http://localhost:8000/user/6265e9645df68091cc16c6bc
