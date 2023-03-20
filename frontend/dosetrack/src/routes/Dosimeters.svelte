@@ -2,23 +2,26 @@
   import Section from "../components/Section.svelte";
   import TableDosimeters from "../components/TableDosimeters.svelte";
   import TableFilms from "../components/TableFilms.svelte";
-  import DosimeterModal from "../components/DosimeterModal.svelte"
+  import DosimeterModal from "../components/DosimeterModal.svelte";
   import API_URL from "../settings";
-  import {UserStore} from "../store";
+  import { UserStore } from "../store";
   import FilmModal from "../components/FilmModal.svelte";
-  
+  import TablePeriods from "../components/TablePeriods.svelte";
+  import PeriodModal from "../components/PeriodModal.svelte";
+
   let dosetrack_user = {};
   let auth0_user = {};
   auth0_user = {};
-  UserStore.subscribe((data)=>{
+  UserStore.subscribe((data) => {
     dosetrack_user = data.Dosetrack;
     auth0_user = data.Auth0;
-  })
+  });
   let company_id = dosetrack_user.company_id.$oid;
 
   let list = [];
   let dosimeter_modal;
   let film_modal;
+  let period_modal;
 
   let promise = fetchDosimeters();
 
@@ -33,13 +36,24 @@
       cache: "no-cache",
     };
 
-    const resDosimeters = await fetch(`${API_URL}/dosimeters/${company_id}`, fetchConfig);
-    const resFilms = await fetch(`${API_URL}/film/by_company/${company_id}`, fetchConfig);
-    
-    if (resDosimeters.ok && resFilms.ok) {
+    const resDosimeters = await fetch(
+      `${API_URL}/dosimeters/${company_id}`,
+      fetchConfig
+    );
+    const resFilms = await fetch(
+      `${API_URL}/film/by_company/${company_id}`,
+      fetchConfig
+    );
+    const resPeriods = await fetch(
+      `${API_URL}/period/by_company/${company_id}`,
+      fetchConfig
+    );
+
+    if (resDosimeters.ok && resFilms.ok && resPeriods.ok) {
       let dosimeters = await resDosimeters.json();
       let films = await resFilms.json();
-      list = {dosimeters, films}
+      let periods = await resPeriods.json();
+      list = { dosimeters, films, periods };
       return list;
     } else {
       throw new Error("No se pudo obtener la lista de dosimetros");
@@ -60,6 +74,11 @@
     // errors = {};
     film_modal.reset();
     film_modal.show();
+  };
+
+  const newPeriod = () => {
+    period_modal.reset();
+    period_modal.show();
   };
 
   const removeDosimeter = (event) => {
@@ -109,6 +128,29 @@
     dosimeter_modal.show();
   };
 
+  const editPeriod = (event) => {
+    let period = event.detail.period;
+    period_modal.reset();
+    document.getElementById("periodModalForm").innerHTML = "Modificar Período";
+    document.getElementById("period_id").value = period._id.$oid;
+    document.getElementById("period").value = period.period;
+    document.getElementById("period_from").value = new Date(
+      parseInt(period.start_date.$date.$numberLong)
+    )
+      .toISOString()
+      .substring(0, 10);
+    document.getElementById("period_to").value = new Date(
+      parseInt(period.end_date.$date.$numberLong)
+    )
+      .toISOString()
+      .substring(0, 10);
+    period_modal.show();
+  };
+
+  const removePeriod = () => {};
+
+  const removeFilm = () => {};
+
   const editFilm = (event) => {
     let film = event.detail.film;
 
@@ -119,39 +161,69 @@
   const updateDosimetersList = (dosimeter) => {
     console.log(dosimeter);
     promise = fetchDosimeters();
-  }
-
+  };
 </script>
-
 
 <Section title="Dosímetros">
   {#await promise}
-  Esperando...
+    Esperando...
   {:then lista}
-  <TableDosimeters
-  on:edit={editDosimeter}
-  on:remove={removeDosimeter}
-  content={lista.dosimeters}
+    <TableDosimeters
+      on:edit={editDosimeter}
+      on:remove={removeDosimeter}
+      content={lista.dosimeters}
     />
-    {:catch error}
+  {:catch error}
     {error.message}
     no andó
-    {/await}
-    <!-- Button trigger modal -->
-    <button
+  {/await}
+  <!-- Button trigger modal -->
+  <button
     type="button"
     class="btn btn-success"
     data-bs-toggle="modal_"
     data-bs-target="#dosimeterModal"
     on:click={newDosimeter}
-    >
+  >
     Nuevo dosímetro
   </button>
-  
-  <DosimeterModal on:updated={updateDosimetersList} {company_id} bind:this={dosimeter_modal}/>
 
+  <DosimeterModal
+    on:updated={updateDosimetersList}
+    {company_id}
+    bind:this={dosimeter_modal}
+  />
 </Section>
 
+<Section title="Períodos">
+  {#await promise}
+    Esperando...
+  {:then lista}
+    <TablePeriods
+      on:edit={editPeriod}
+      on:remove={removePeriod}
+      content={lista.periods}
+    />
+  {:catch error}
+    {error.message}
+    no andó
+  {/await}
+
+  <button
+    type="button"
+    class="btn btn-success"
+    data-bs-toggle="modal_"
+    data-bs-target="#dosimeterModal"
+    on:click={newPeriod}
+  >
+    Nuevo Período
+  </button>
+  <PeriodModal
+    on:updated={updateDosimetersList}
+    {company_id}
+    bind:this={period_modal}
+  />
+</Section>
 
 <Section title="Films">
   {#await promise}
@@ -159,7 +231,7 @@
   {:then lista}
     <TableFilms
       on:edit={editFilm}
-      on:remove={removeDosimeter}
+      on:remove={removeFilm}
       content={lista.films}
     />
   {:catch error}
@@ -177,9 +249,13 @@
     Nuevo film
   </button>
 
-  <FilmModal on:updated={updateDosimetersList} {company_id} bind:this={film_modal}/>
-
+  <FilmModal
+    on:updated={updateDosimetersList}
+    {company_id}
+    bind:this={film_modal}
+  />
 </Section>
+
 <style>
   .form-label {
     margin-bottom: 0.5rem;

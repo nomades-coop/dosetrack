@@ -4,18 +4,18 @@ import { getCachedData } from "./cache";
 
 export const getDosimetersByCompany = async (company_id) => {
 
-  let dosimeters = await getCachedData('dosetrack.dosimeters_by_company', `${API_URL}/operators/${company_id}`);
+  let dosimeters = await getCachedData('dosetrack.dosimeters_by_company', `${API_URL}/operators/${company_id}`, true);
 
-  return dosimeters;
+  // return dosimeters;
 
-  let cache_data = getCachedData('dosetrack.dosimeters_by_company', `${API_URL}/dosimeters/${company_id}`); 
-  
+  let cache_data = getCachedData('dosetrack.dosimeters_by_company', `${API_URL}/dosimeters/${company_id}`);
+
   if (cache_data) {
 
   }
 
   const res = await fetch(`${API_URL}/dosimeters/${company_id}`);
-      
+
   if (res.ok) {
     let list = await res.json();
     return list;

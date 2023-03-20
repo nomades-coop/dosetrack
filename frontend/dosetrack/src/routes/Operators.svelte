@@ -3,7 +3,7 @@
   import Section from "../components/Section.svelte";
   import TableOperators from "../components/TableOperators.svelte";
   import { onMount } from "svelte";
-  import { 
+  import {
     isDateRule,
     isRequiredRule,
     setError,
@@ -11,19 +11,19 @@
     isCommaSeparated,
   } from "../validations";
   import API_URL from "../settings";
-  import {UserStore} from "../store";
-  import {operators_by_company} from "../services/operators";
-  import {getDosimetersByCompany} from "../services/dosimeter";	
+  import { UserStore } from "../store";
+  import { operators_by_company } from "../services/operators";
+  import { getDosimetersByCompany } from "../services/dosimeter";
 
-  import { toast } from '@zerodevx/svelte-toast'
+  import { toast } from "@zerodevx/svelte-toast";
 
   let dosetrack_user = {};
   let auth0_user = {};
   auth0_user = {};
-  UserStore.subscribe((data)=>{
+  UserStore.subscribe((data) => {
     dosetrack_user = data.Dosetrack;
     auth0_user = data.Auth0;
-  })
+  });
 
   let list = [];
   let company_id = dosetrack_user.company_id.$oid;
@@ -40,8 +40,6 @@
   onMount(async () => {
     modal = new bootstrap.Modal("#operatorModal");
     dosimeters = await fetchDosimeters(company_id);
-    
-
   });
 
   async function fetchDosimeters(company_id) {
@@ -49,7 +47,7 @@
   }
 
   async function fetchOperators() {
-    return await operators_by_company(company_id);
+    return await operators_by_company(company_id, true);
   }
 
   const onSubmit = (e) => {
@@ -215,14 +213,15 @@
 
   const copyToken = () => {
     const token = document.getElementById("token").value;
-    
+
     if (!navigator.clipboard) {
-      token.select()
+      token.select();
       token.setSelectionRange(0, 99999);
       document.execCommand("copy");
     } else {
-      navigator.clipboard.writeText(token).then(() => {
-          toast.push('¡Token copiado al portapapeles!');
+      navigator.clipboard.writeText(token).then(
+        () => {
+          toast.push("¡Token copiado al portapapeles!");
           console.log("Async: Copying to clipboard was successful!");
         },
         (err) => {
@@ -230,9 +229,7 @@
         }
       );
     }
-
   };
-
 </script>
 
 <Section title="Operadores">
@@ -391,7 +388,6 @@
                 on:click={copyToken}
                 readonly
                 aria-describedby="licencelHelp"
-                
                 style="text-align: center;font-weight: bolder;
                 font-size: 1.5em;"
               />
@@ -430,17 +426,18 @@
   }
 
   #token:focus {
-      color: #292521;
-      background-color: #43ec61;
-      border-color: #ff8777;
-      outline: 0;
-      box-shadow: 0 0 0 0.25rem #0dfd3163;
+    color: #292521;
+    background-color: #43ec61;
+    border-color: #ff8777;
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem #0dfd3163;
   }
 
-  input[readonly], #token{
+  input[readonly],
+  #token {
     color: #000000;
     background-color: #d1ffd0;
     cursor: copy;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   }
 </style>

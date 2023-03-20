@@ -15,7 +15,7 @@
         { _id: { title: "", type: "_id" } },
         { operator: { title: "Operador", type: "obj", accesor: "name" } },
         { company_code: { title: "Código", type: "str" } },
-        { period: { title: "Periodo", type: "str" } },
+        { period: { title: "Periodo", type: "obj", accesor: "period" } },
         { status: { title: "Status", type: "str" } },
       ],
       rows: list,
@@ -100,7 +100,7 @@
                   {:else if content.headers[i].type === "date"}
                     {new Date(column[1]).toISOString().split("T")[0]}
                   {:else if content.headers[i].type === "obj"}
-                    {column[1]? column[1][content.headers[i].accesor]: "N/A"}
+                    {column[1] ? column[1][content.headers[i].accesor] : "N/A"}
                   {:else}
                     {column[1] || "N/A"}
                   {/if}

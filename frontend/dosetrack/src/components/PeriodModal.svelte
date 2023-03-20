@@ -5,6 +5,8 @@
     isRequiredRule,
     isFormValid,
     setError,
+    isLowerThan,
+    isGreaterThan,
   } from "../validations";
   import { onMount } from "svelte";
   import API_URL from "../settings";
@@ -16,6 +18,7 @@
   import PeriodSelector from "./PeriodSelector.svelte";
 
   export let company_id = "";
+
   let errors = {};
   let modal;
   let maskOptions;
@@ -29,7 +32,24 @@
 
   onMount(async () => {
     // console.log(company_id);
-    modal = new bootstrap.Modal("#filmModal");
+    modal = new bootstrap.Modal("#periodModal");
+    maskOptions = {
+      mask: "YYYY-MM",
+      lazy: false,
+      blocks: {
+        YYYY: {
+          mask: "0000",
+        },
+
+        MM: {
+          mask: IMask.MaskedRange,
+          from: 1,
+          to: 12,
+          maxLength: 2,
+        },
+      },
+    };
+    mask = IMask(document.getElementById("period"), maskOptions);
 
     operators = await operators_by_company(company_id, true);
     operators = operators.sort((a, b) => (a.name > b.name ? 1 : -1));
@@ -38,6 +58,7 @@
   });
 
   export function show() {
+    mask = IMask(document.getElementById("period"), maskOptions);
     modal.show();
   }
 
@@ -46,23 +67,25 @@
   }
 
   export function reset() {
+    errors = {};
     document.getElementById("modal-delete").style.display = "none";
     document.getElementById("modal-save").style.display = "inline-block";
-    document.getElementById("company_id").value = company_id;
-    document.getElementById("filmModalForm").innerHTML = "Nuevo Film";
-    document.getElementById("formFilm").reset();
+    document.getElementById("periodModalForm").innerHTML = "Nuevo Período";
+    document.getElementById("formPeriod").reset();
+    mask = IMask(document.getElementById("period"), maskOptions);
   }
 
   export function set(title = null, film) {
     document.getElementById("modal-delete").style.display = "none";
     document.getElementById("modal-save").style.display = "inline-block";
 
-    document.getElementById("filmModalForm").innerHTML = title || "Nuevo Film";
+    document.getElementById("periodModalForm").innerHTML =
+      title || "Nuevo Período";
 
     document.getElementById("film_id").value = film._id.$oid;
     document.getElementById("operator_id").value = film.operator._id.$oid;
     document.getElementById("company_code").value = film.company_code;
-    document.getElementById("film_period_id").value = film.period._id.$oid;
+    mask.value = film.period;
 
     document.getElementById("status").value = film.status;
   }
@@ -73,29 +96,67 @@
     setError(
       errors,
       data,
-      "company_code",
+      "period",
       isRequiredRule,
       "Este dato es obligatorio"
     );
     setError(
       errors,
       data,
-      "operator_id",
+      "period_from",
       isRequiredRule,
       "Este dato es obligatorio"
     );
     setError(
       errors,
       data,
-      "period_id",
+      "period_to",
       isRequiredRule,
       "Este dato es obligatorio"
+    );
+    setError(errors, data, "period_from", isDateRule, "No es una fecha válida");
+    setError(errors, data, "period_to", isDateRule, "No es una fecha válida");
+    setError(
+      errors,
+      data,
+      ["period_from", "period_to"],
+      isLowerThan,
+      "La fecha debe ser menor al fin del período."
+    );
+    setError(
+      errors,
+      data,
+      ["period_to", "period_from"],
+      isGreaterThan,
+      "La fecha debe ser mayor al inicio del período."
+    );
+
+    setError(
+      errors,
+      data,
+      "period_from",
+      haveSameYear,
+      "El año debe coincidir con el período."
+    );
+    setError(
+      errors,
+      data,
+      "period_to",
+      haveSameYear,
+      "El año debe coincidir con el período."
     );
 
     return errors;
   };
 
-  const onSubmit = (e) => {
+  const haveSameYear = (valueA) => {
+    let año_periodo = parseInt(
+      document.getElementById("period").value.slice(0, 4)
+    );
+    return año_periodo === new Date(valueA).getFullYear();
+  };
+
+  const onSubmit = async (e) => {
     let formData = new FormData(e.target);
     const data = {};
 
@@ -104,25 +165,36 @@
       data[key] = value;
     }
 
-    if (data.film_id === "") {
-      delete data.film_id;
-    } else {
-      data._id = data.film_id;
-      delete data.film_id;
-    }
-    if (data.operator_id === "") delete data.operator_id;
+    if (data._id === "") delete data._id;
 
-    console.log({ data });
+    if (data.period_id === "") {
+      delete data.period_id;
+    } else {
+      data._id = data.period_id;
+      delete data.period_id;
+    }
+
+    if (data.operator_id === "") delete data.operator_id;
+    data.period = mask.unmaskedValue;
+
+    data.company_id = company_id;
 
     errors = {};
     errors = validateForm(data);
 
     if (isFormValid(errors)) {
-      modal.hide();
-      data.period = data.period_id;
-      delete data.period_id;
+      data.start_date = { $date: new Date(data.period_from).toISOString() };
+      data.end_date = { $date: new Date(data.period_to).toISOString() };
+      delete data.period_from;
+      delete data.period_to;
 
-      doPost(data);
+      errors = await doPost(data);
+
+      if (errors) {
+        return errors;
+      }
+
+      modal.hide();
     } else {
       console.log("Invalid form", errors);
     }
@@ -140,12 +212,14 @@
     };
 
     console.log("delete", id);
-    const res = await fetch(`${API_URL}/film/${id}`, fetchConfig);
+    const res = await fetch(`${API_URL}/period/${id}`, fetchConfig);
     console.log(res);
     modal.hide();
   };
 
   const doPost = async (data) => {
+    // let errors = {};
+
     const myHeaders = new Headers({
       "Content-Type": "application/json",
     });
@@ -157,10 +231,18 @@
       body: JSON.stringify(data),
     };
 
-    const res = await fetch(`${API_URL}/film`, fetchConfig);
+    const res = await fetch(`${API_URL}/period`, fetchConfig);
     const json = await res.json();
 
-    updated(JSON.stringify(json));
+    if (res.ok) {
+      updated(JSON.stringify(json));
+    } else {
+      if (json.error === 902) {
+        errors["period"] = { error: [] };
+        errors["period"]["error"].push(["¡Este período ya existe!"]);
+        return errors;
+      }
+    }
   };
 
   const updated = (dosimeter) => {
@@ -174,15 +256,15 @@
 
 <div
   class="modal fade"
-  id="filmModal"
+  id="periodModal"
   tabindex="-1"
-  aria-labelledby="filmModalForm"
+  aria-labelledby="periodModalForm"
   aria-hidden="true"
 >
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="filmModalForm">Nuevo Film</h5>
+        <h5 class="modal-title" id="periodModalForm">Nuevo Período</h5>
         <button
           type="button"
           class="btn-close"
@@ -191,68 +273,68 @@
         />
       </div>
       <form
-        id="formFilm"
+        id="formPeriod"
         class=""
         novalidate
         on:submit|preventDefault={onSubmit}
       >
         <input
           type="text"
-          id="film_id"
-          name="film_id"
+          id="period_id"
+          name="period_id"
           value=""
           style="display: none"
         />
-        <input
-          type="text"
-          id="company_id"
-          name="company_id"
-          value={company_id}
-          style="display: none"
-        />
+
         <div class="modal-body">
           <div class="mb-3">
-            <OperatorSelector bind:this={operatorSelector} {operators} />
-            <FormError err={errors.operator_id} />
-          </div>
-          <div class="mb-3">
-            <label for="company_code" class="form-label">Código</label>
+            <label for="period" class="form-label">Período</label>
             <input
               type="text"
               class="form-control"
-              name="company_code"
-              id="company_code"
-              aria-describedby="company_codeHelp"
+              name="period"
+              id="period"
+              aria-describedby="periodlHelp"
             />
-            <div id="company_codeHelp" class="form-text">
-              Código asignado por la empresa
+            <div id="periodlHelp" class="form-text">
+              Período asignado al film en formato AAAA-MM ({new Date().getFullYear()}-{(
+                "0" +
+                (new Date().getMonth() + 1)
+              ).slice(-2)})
             </div>
-            <FormError err={errors.company_code} />
+            <FormError err={errors.period} />
           </div>
 
           <div class="mb-3">
-            <PeriodSelector
-              id="film_period_id"
-              bind:this={periodSelector}
-              {periods}
-            />
-            <FormError err={errors.period_id} />
-          </div>
-
-          <div class="mb-3">
-            <label for="staus" class="form-label">Estado</label>
-            <select
-              id="status"
-              name="status"
-              class="form-select"
-              aria-label="Default select example"
+            <label for="period_from" class="form-label"
+              >Inicio del Período</label
             >
-              <option value="Enabled" selected>Habilitado</option>
-              <option value="Disabled">Desahabilitado</option>
-            </select>
-            <div id="statusHelp" class="form-text">
-              Si el dosíemtro se encuentra en servicio
+            <input
+              type="date"
+              class="form-control"
+              id="period_from"
+              name="period_from"
+              aria-describedby="period_fromHelp"
+            />
+            <div id="period_fromHelp" class="form-text">
+              Fecha en la que incia el período.
             </div>
+            <FormError err={errors.period_from} />
+          </div>
+
+          <div class="mb-3">
+            <label for="period_to" class="form-label">Fin del Período</label>
+            <input
+              type="date"
+              class="form-control"
+              id="period_to"
+              name="period_to"
+              aria-describedby="period_toHelp"
+            />
+            <div id="period_toHelp" class="form-text">
+              Fecha en la que finaliza el período.
+            </div>
+            <FormError err={errors.period_to} />
           </div>
         </div>
         <div class="modal-footer">

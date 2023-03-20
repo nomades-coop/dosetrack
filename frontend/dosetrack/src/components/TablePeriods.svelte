@@ -4,7 +4,6 @@
   import BsTrash2Fill from "svelte-icons-pack/bs/BsTrash2Fill";
   import { createEventDispatcher } from "svelte";
   import { getDateFrom } from "../services/helpers";
-
   export let content = {
     headers: [],
     rows: [],
@@ -14,19 +13,17 @@
     return {
       headers: [
         { _id: { title: "", type: "_id" } },
-        { brand: { title: "Marca", type: "str" } },
-        { model: { title: "Modelo", type: "str" } },
-        { sn: { title: "SN", type: "str" } },
-        { last_calibration_date: { title: "Calibración", type: "date" } },
-        { status: { title: "Status", type: "str" } },
+        { period: { title: "Período", type: "str" } },
+        { start_date: { title: "Desde", type: "date" } },
+        { end_date: { title: "Hasta", type: "date" } },
       ],
       rows: list,
     };
   };
 
-  const dispatch = createEventDispatcher();
-
   content = tableContent(content);
+
+  const dispatch = createEventDispatcher();
 
   let empty =
     Object.keys(content).length === 0 && content.constructor === Object;
@@ -61,17 +58,17 @@
     return obj;
   };
 
-  const edit = (dosimeter) => {
+  const edit = (period) => {
     // -- hace el dispatch
     dispatch("edit", {
-      dosimeter: toObject(dosimeter),
+      period: toObject(period),
     });
   };
 
-  const remove = (dosimeter) => {
+  const remove = (period) => {
     // -- hace el dispatch
     dispatch("remove", {
-      dosimeter: toObject(dosimeter),
+      period: toObject(period),
     });
   };
 </script>
@@ -101,8 +98,10 @@
                     <img src="" alt="" />
                   {:else if content.headers[i].type === "date"}
                     {getDateFrom(column[1])}
+                  {:else if content.headers[i].type === "obj"}
+                    {column[1] ? column[1][content.headers[i].accesor] : "N/A"}
                   {:else}
-                    {column[1]}
+                    {column[1] || "N/A"}
                   {/if}
                 </td>
               {/if}
