@@ -4,12 +4,12 @@
   import FaSolidUsers from "svelte-icons-pack/fa/FaSolidUsers";
   import FaBrandsReact from "svelte-icons-pack/fa/FaBrandsReact";
   import FaSolidBookDead from "svelte-icons-pack/fa/FaSolidBookDead";
-  import SiCreatereactapp from "svelte-icons-pack/si/SiCreatereactapp";	
+  import SiCreatereactapp from "svelte-icons-pack/si/SiCreatereactapp";
   import FaArrowAltCircleLeft from "svelte-icons-pack/fa/FaArrowAltCircleLeft";
   import BsFileEarmarkSpreadsheet from "svelte-icons-pack/bs/BsFileEarmarkSpreadsheet";
   import { useAuth0 } from "../services/auth0";
 
-  const {isAuthenticated, logout } = useAuth0;
+  const { isAuthenticated, logout } = useAuth0;
 
   const toggleMenu = () => {
     let menu = document.getElementById("sidebarMenu");
@@ -49,22 +49,25 @@
           <Icon src={FaSolidUsers} color="gray" className="iconito-menu" />
           Operadores
         </a>
-      </li>      
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="#/dosimeters" on:click={toggleMenu}>
           <Icon src={FaBrandsReact} color="gray" className="iconito-menu" />
           Dosímetros
         </a>
 
-          <ul class="nav flex-column" style="margin-left: 0.5em">
-            <li class="nav-item">
-              <a class="nav-link" href="#/films" on:click={toggleMenu}>
-                <Icon src={BsFileEarmarkSpreadsheet} color="gray" className="iconito-menu" />
-                Cargar datos Films
-              </a>
-            </li>
-          </ul>
-
+        <ul class="nav flex-column" style="margin-left: 0.5em">
+          <li class="nav-item">
+            <a class="nav-link" href="#/films" on:click={toggleMenu}>
+              <Icon
+                src={BsFileEarmarkSpreadsheet}
+                color="gray"
+                className="iconito-menu"
+              />
+              Cargar Films
+            </a>
+          </li>
+        </ul>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#/reports" on:click={toggleMenu}>
@@ -82,15 +85,24 @@
       </li>
 
       {#if $isAuthenticated}
-      <li class="nav-item">
-          <span class="nav-link" style="cursor:pointer" on:click={toggleMenu} on:click={() =>
-            logout({
-              returnTo: window.location.origin,
-            })}>
-          <Icon src={FaArrowAltCircleLeft} color="gray" className="iconito-menu" />
-          Salir
+        <li class="nav-item">
+          <span
+            class="nav-link"
+            style="cursor:pointer"
+            on:click={toggleMenu}
+            on:click={() =>
+              logout({
+                returnTo: window.location.origin,
+              })}
+          >
+            <Icon
+              src={FaArrowAltCircleLeft}
+              color="gray"
+              className="iconito-menu"
+            />
+            Salir
           </span>
-      </li>
+        </li>
       {/if}
     </ul>
 
