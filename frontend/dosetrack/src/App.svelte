@@ -79,6 +79,8 @@
         );
       }
     }
+
+    registration_form.classList.remove("visually-hidden");
   });
 
   let routes = {
