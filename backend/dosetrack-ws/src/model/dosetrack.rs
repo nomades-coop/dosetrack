@@ -1,4 +1,5 @@
 use mongodb::bson::oid::ObjectId;
+use mongodb::bson::serde_helpers::bson_datetime_as_rfc3339_string;
 use mongodb::bson::DateTime;
 // use mongodb::bson::RawArrayBuf;
 use rust_decimal::prelude::*;
@@ -139,7 +140,9 @@ pub struct Period {
     pub id: Option<ObjectId>,
     pub company_id: ObjectId,
     pub period: String,
+    // #[serde(with = "bson_datetime_as_rfc3339_string")]
     pub start_date: DateTime,
+    // #[serde(with = "bson_datetime_as_rfc3339_string")]
     pub end_date: DateTime,
 }
 

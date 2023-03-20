@@ -1,10 +1,10 @@
 # Local variables
 @operator_id = 62eeb7ec0c11652e03b5e6b7
-@companyId = 62eca328d27242b672f375f3
+@companyId = 6413406342fbcb5f9b80fb5a
 @dosimeterId = bdca535261245abfcd11aea3
 
 ### Obtener todos los periods
-GET http://localhost:8000/period/by_company/62eca328d27242b672f375f3
+GET http://localhost:8000/period/by_company/{{companyId}}
 
 ### Obtener un periodo por su Id
 GET http://localhost:8000/period/631fb5faa38db0d5d29ac2b4
@@ -17,9 +17,9 @@ content-type: application/json
 
 {
   "company_id": "{{companyId}}",
-  "period": "202207",
-  "start_date": {"$date": "2022-07-03T00:00:00.000+00:00"},
-  "end_date": {"$date": "2022-08-03T00:00:00.000+00:00"}
+  "period": "202303",
+  "start_date": {"$date": "2023-01-03T00:00:00.000+00:00"},
+  "end_date": {"$date": "2023-04-01T00:00:00.000+00:00"}
 
 }
 

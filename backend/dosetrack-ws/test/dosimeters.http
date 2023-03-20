@@ -1,9 +1,9 @@
 # Local variables
-@companyId = abca535261245abfcd4da31a
+@companyId = 6413406342fbcb5f9b80fb5a
 @dosimeterId = bdca535261245abfcd11aea3
 
 ### Obtener todos los dosimeters
-GET http://localhost:8000/dosimeters/6272d4752a9df7aeb4aaab90
+GET http://localhost:8000/dosimeters/{{companyId}}
 
 ###
 DELETE http://localhost:8000/dosimeter/6272d4752a9df7aeb4bbbb90

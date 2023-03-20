@@ -27,7 +27,12 @@ pub async fn get_by_company(
     let filter = doc! {
      "company_id": ObjectId::parse_str(&company_id).unwrap(),
     };
-    let options = FindOptions::builder().collation(col).build();
+    let options = FindOptions::builder()
+        .collation(col)
+        .sort(doc! {
+          "period": -1
+        })
+        .build();
 
     let mut cursor: Cursor<Period> = collection.find(filter, options).await.unwrap();
 
@@ -69,6 +74,18 @@ pub async fn create_or_update(
     let result: InsertOneResult;
 
     if new_period.id.is_none() {
+        let filter = doc! {"period": &new_period.period};
+        let period = collection.find_one(filter, None).await.unwrap_or(None);
+
+        if !period.is_none() {
+            return (
+                Status::InternalServerError,
+                json!(doc! {"error": 902, "msg": "El período ya existe"}).to_string(),
+            );
+        }
+
+        new_period.id = Some(bson::oid::ObjectId::new());
+
         match collection.insert_one(new_period.deref(), None).await {
             Ok(p) => result = p,
             Err(e) => {
@@ -82,6 +99,7 @@ pub async fn create_or_update(
         // new_period.id = result.unwrap().inserted_id.as_object_id();
         new_period.id = result.inserted_id.as_object_id();
     } else {
+        println!("Periodo a actualizar: {}", &new_period.id.unwrap());
         let _result = collection
             .replace_one(
                 doc! { "_id": &new_period.id.unwrap() },
@@ -94,7 +112,8 @@ pub async fn create_or_update(
         if _result.modified_count == 0 {
             return (
                 Status::NotFound,
-                "No se encontró el período a actualizar".to_string(),
+                json!(doc! {"error": 903, "msg": "No hay nada que actualizar".to_string()})
+                    .to_string(),
             );
         }
 

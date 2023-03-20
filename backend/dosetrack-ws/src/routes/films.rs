@@ -37,8 +37,22 @@ pub async fn get_all(
             }
         },
         doc! {
+            "$lookup": {
+                "from": "periods",
+                "localField": "period",
+                "foreignField": "_id",
+                "as": "period"
+            }
+        },
+        doc! {
             "$unwind": {
                 "path": "$operator",
+                "preserveNullAndEmptyArrays": true
+            }
+        },
+        doc! {
+            "$unwind": {
+                "path": "$period",
                 "preserveNullAndEmptyArrays": true
             }
         },

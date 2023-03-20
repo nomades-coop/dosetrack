@@ -1,10 +1,10 @@
 # Local variables
-@operator_id = 62681a54ae60331bbb5414ae
-@companyId = abca535261245abfcd4da31a
+@operator_id = 6413780642fbcb5f9b80fb5c
+@companyId = 6413406342fbcb5f9b80fb5a
 @dosimeterId = bdca535261245abfcd11aea3
 
 ### Obtener todos los films
-GET http://localhost:8000/film/by_company/62eca328d27242b672f375f3
+GET http://localhost:8000/film/by_company/{{companyId}}
 
 ### Obtener un operador por su Id
 
@@ -20,7 +20,7 @@ content-type: application/json
   "company_id": "{{companyId}}",
   "operator_id": "{{operator_id}}",
   "company_code": "123456",
-  "period": "202001",
+  "period": "64175e394eb8b9e0aaff082d",
   "status": "Enabled"
 }
 
