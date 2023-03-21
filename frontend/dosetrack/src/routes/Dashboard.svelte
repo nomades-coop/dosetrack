@@ -2,30 +2,38 @@
   import { onMount } from "svelte";
   import Section from "../components/Section.svelte";
   import TableOperatorsDasboard from "../components/TableOperatorsDasboard.svelte";
-  import PeriodViewer from '../components/PeriodViewer.svelte'
+  import PeriodViewer from "../components/PeriodViewer.svelte";
 
   import API_URL from "../settings";
-  import {UserStore} from "../store";
-  import {Decimal} from 'decimal.js';
+  import { UserStore } from "../store";
+  import { Decimal } from "decimal.js";
+  import { push } from "svelte-spa-router";
 
   // creates an array with 1.7 decimal value 33 times
-  let doses = Array.from({length: 33}, () => new Decimal(1.7));
+  let doses = Array.from({ length: 33 }, () => new Decimal(1.7));
 
-  let totalDoses = doses.reduce((acc, dose) => new Decimal(acc).add(dose), 0).toFixed();
+  let totalDoses = doses
+    .reduce((acc, dose) => new Decimal(acc).add(dose), 0)
+    .toFixed();
 
   let dosetrack_user = {};
   let auth0_user = {};
   auth0_user = {};
-  UserStore.subscribe((data)=>{
+  UserStore.subscribe((data) => {
     dosetrack_user = data.Dosetrack;
     auth0_user = data.Auth0;
-  })
-  
+  });
+
   let tableData;
 
   // Get company id from logged user
-  let company_id = dosetrack_user.company_id.$oid; //"abca535261245abfcd4da31a";
-  
+  let company_id = null;
+
+  try {
+    company_id = dosetrack_user.company_id.$oid; //"abca535261245abfcd4da31a";
+  } catch {
+    push("/dose/registration");
+  }
 
   let promise = fetchOperators();
 
@@ -70,9 +78,10 @@
 <Section title="Operadores en situación crítica!" showToolbar="">
   <div class="alert alert-danger d-flex justify-content-between" role="alert">
     <span class="dosis-op">Centurión, Pablo</span>
-    <span class="dosis">{totalDoses} <span style="font-size: 12pt;">mSv</span> </span>
+    <span class="dosis"
+      >{totalDoses} <span style="font-size: 12pt;">mSv</span>
+    </span>
   </div>
-
 </Section>
 
 <Section title="Radiación acumulada anual">

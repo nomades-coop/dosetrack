@@ -38,6 +38,7 @@
   } = useAuth0;
 
   let dosetrack_user = null;
+  let dosetrack_operator = null;
 
   const authenticationGuard = (ctx, next) => {
     if ($isAuthenticated) {
@@ -62,6 +63,7 @@
 
     if ($isAuthenticated) {
       dosetrack_user = await getUser($user["email"]);
+      dosetrack_operator = window.localStorage.getItem("operator");
 
       let u_data = {
         Auth0: $user,
@@ -69,7 +71,7 @@
       };
       UserStore.update((n) => u_data);
 
-      if (dosetrack_user) {
+      if (dosetrack_user || dosetrack_operator) {
         // console.log('Dosetrack User', dosetrack_user)
       } else {
         let registration_form = document.getElementById("registration_form");
@@ -105,7 +107,7 @@
     const res = await fetch(`${API_URL}/operator/${operator_id}`);
 
     if (res.ok) {
-      operator = await res.json();
+      let operator = await res.json();
       window.localStorage.setItem("operator", JSON.stringify(operator));
     } else {
       errors["token"] = { error: [] };
@@ -131,7 +133,7 @@
       <NavBar />
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        {#if $isAuthenticated && dosetrack_user}
+        {#if $isAuthenticated && (dosetrack_user || dosetrack_operator)}
           <Router {routes} />
         {:else}
           <div id="registration_form" class="visually-hidden">

@@ -3,6 +3,8 @@
   import Icon from "svelte-icons-pack/Icon.svelte";
   import RiSystemMenuFill from "svelte-icons-pack/ri/RiSystemMenuFill";
   const { user, isAuthenticated } = useAuth0;
+
+  let dosetrack_operator = JSON.parse(window.localStorage.getItem("operator"));
 </script>
 
 <header
@@ -27,8 +29,12 @@
 
   {#if $isAuthenticated}
     <h4 class="me-3 mt-1 d-none d-sm-block" style="color: rgb(94 94 94);">
-      {$user.given_name}
-      {$user.family_name}
+      {#if dosetrack_operator}
+        {dosetrack_operator.name}
+      {:else}
+        {$user.family_name},
+        {$user.given_name}
+      {/if}
     </h4>
   {/if}
 
