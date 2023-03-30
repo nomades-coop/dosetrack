@@ -15,7 +15,7 @@ use routes::*;
 use std::error::Error;
 
 use rocket::fairing::{Fairing, Info, Kind};
-use rocket::fs::{relative, FileServer};
+use rocket::fs::{relative, FileServer, NamedFile};
 use rocket::http::Header;
 use rocket::http::{ContentType, Method, Status};
 use rocket::shield::Shield;
@@ -23,6 +23,7 @@ use rocket::{Request, Response};
 use rocket_dyn_templates::Template;
 use rocket_oauth2::OAuth2;
 use std::env;
+use std::path::Path;
 pub struct CORS;
 
 #[rocket::async_trait]
@@ -63,8 +64,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _rocket = rocket::build()
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
-        .mount("/", FileServer::from(frontend_path))
-        .mount("/", routes![registration::new])
+        // .mount("/", FileServer::from(frontend_path))
+        .mount("/", routes![all_options, registration::new])
         .mount(
             "/dose",
             routes![doses::get_doses, doses::get_by_operator, doses::create,],

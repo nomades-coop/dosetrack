@@ -20,6 +20,45 @@ use crate::utils::GenericError;
 use rocket::futures::TryStreamExt;
 use rocket::http::Status;
 
+#[get("/operators/doses/<company_id>/<period>")]
+pub async fn get_by_company_with_doses(
+    company_id: String,
+    period: String,
+    database: &State<database::MongoDB>,
+) -> (Status, String) {
+    let collection = database.collection::<Operator>("operators");
+
+    let col = Collation::builder().locale("es").build();
+
+    let filter = doc! {
+     "company_id": ObjectId::parse_str(&company_id).unwrap(),
+    };
+    let options = FindOptions::builder()
+        .projection(doc! {
+          "_id": 1,
+          "company_id": 1,
+          "name": 1,
+          "dni": 1,
+          "licence": 1,
+          "dosimeter_id": 1,
+          "status":1
+        })
+        .collation(col)
+        .sort(doc! {
+          "name": 1i32
+        })
+        .build();
+
+    let mut cursor: Cursor<Operator> = collection.find(filter, options).await.unwrap();
+
+    let mut operators: Vec<Operator> = Vec::new();
+    while let Ok(Some(operator)) = cursor.try_next().await {
+        operators.push(operator);
+    }
+
+    (Status::Ok, json!(operators).to_string())
+}
+
 #[get("/operators/<company_id>")]
 pub async fn get_by_company(
     company_id: String,

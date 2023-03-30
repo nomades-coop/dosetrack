@@ -3,6 +3,7 @@ use mongodb::bson::serde_helpers::bson_datetime_as_rfc3339_string;
 use mongodb::bson::DateTime;
 // use mongodb::bson::RawArrayBuf;
 use rust_decimal::prelude::*;
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -117,7 +118,7 @@ pub struct Company {
 pub struct Film {
     pub _id: Option<ObjectId>,
     pub company_id: ObjectId,
-    pub operator_id: Option<ObjectId>,
+    // pub operator_id: Option<ObjectId>,
     pub company_code: String,
     pub period: ObjectId,
     pub status: DosimeterStatus,
@@ -163,7 +164,7 @@ pub struct Dose {
     pub company_id: ObjectId,
     pub operator_id: ObjectId,
     pub dosimeter_id: ObjectId,
-    pub dose: f32,
+    pub dose: Decimal,
     pub picture: Option<String>,
     pub when: DateTime,
 }

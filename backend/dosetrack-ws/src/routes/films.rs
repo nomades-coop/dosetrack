@@ -14,15 +14,16 @@ use rocket::futures::TryStreamExt;
 use rocket::http::Status;
 use rocket::response::status;
 
-#[get("/by_company/<company_id>")]
+#[get("/by_company/<company_id>?<period>")]
 pub async fn get_all(
     company_id: String,
+    period: Option<String>,
     database: &State<database::MongoDB>,
 ) -> Result<Json<Vec<Document>>, GenericError> {
     let collection = database.collection::<Film>("films");
 
     let col = Collation::builder().locale("es").build();
-    let query = vec![
+    let mut query = vec![
         doc! {
             "$match": {
               "company_id": ObjectId::parse_str(&company_id).unwrap(),
@@ -57,6 +58,16 @@ pub async fn get_all(
             }
         },
     ];
+
+    if period.is_some() {
+        println!("{}", period.clone().unwrap_or("default".to_string()));
+
+        query.push(doc! {
+            "$match": {
+                "period.period": period.unwrap(),
+            }
+        });
+    }
 
     let mut films = Vec::new();
     let mut cursor: Cursor<Document> = collection.aggregate(query, None).await.unwrap();

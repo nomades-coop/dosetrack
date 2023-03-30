@@ -41,7 +41,7 @@
       <li class="nav-item">
         <a class="nav-link" href="#/users" on:click={toggleMenu}>
           <Icon src={FaSolidUsers} color="gray" className="iconito-menu" />
-          Usuarios
+          Administrador
         </a>
       </li>
       <li class="nav-item">

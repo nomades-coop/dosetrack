@@ -1,16 +1,8 @@
 <script>
   import Router from "svelte-spa-router";
-  import Book from "./routes/Book.svelte";
-  import NotFound from "./routes/NotFound.svelte";
 
   import Header from "./components/Header.svelte";
   import NavBar from "./components/NavBar.svelte";
-  import Dashboard from "./routes/Dashboard.svelte";
-  import Faq from "./routes/Faq.svelte";
-  import Operator from "./routes/Operator.svelte";
-  import Operators from "./routes/Operators.svelte";
-  import Dosimeters from "./routes/Dosimeters.svelte";
-  import DoseRegistration from "./routes/DoseRegistration.svelte";
   import AuthenticationButton from "./components/auth/authentication-button.svelte";
   import Section from "./components/Section.svelte";
   import NewCompany from "./components/NewCompany.svelte";
@@ -19,10 +11,20 @@
   import Loader from "./components/Loader.svelte";
   import { useAuth0 } from "./services/auth0";
   import { UserStore } from "./store";
-  import Users from "./routes/Users.svelte";
   import API_URL from "./settings";
   import FormError from "./components/FormError.svelte";
+
+  import Book from "./routes/Book.svelte";
+  import NotFound from "./routes/NotFound.svelte";
+  import Operator from "./routes/Operator.svelte";
+  import Operators from "./routes/Operators.svelte";
+  import Dosimeters from "./routes/Dosimeters.svelte";
   import Films from "./routes/Films.svelte";
+  import Users from "./routes/Users.svelte";
+  import Periods from "./routes/Periods.svelte";
+  import Dashboard from "./routes/Dashboard.svelte";
+  import Faq from "./routes/Faq.svelte";
+  import DoseRegistration from "./routes/DoseRegistration.svelte";
 
   import { SvelteToast } from "@zerodevx/svelte-toast";
   const toast_options = {};
@@ -95,6 +97,7 @@
     "/operator/:company_id/:operator_id": Operator,
     "/dose/registration": DoseRegistration,
     "/users": Users,
+    "/reports": Periods,
     "*": NotFound,
   };
 

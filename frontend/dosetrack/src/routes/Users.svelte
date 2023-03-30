@@ -11,15 +11,15 @@
     isCommaSeparated,
   } from "../validations";
   import API_URL from "../settings";
-  import {UserStore} from "../store";
-  
+  import { UserStore } from "../store";
+
   let dosetrack_user = {};
   let auth0_user = {};
   auth0_user = {};
-  UserStore.subscribe((data)=>{
+  UserStore.subscribe((data) => {
     dosetrack_user = data.Dosetrack;
     auth0_user = data.Auth0;
-  })
+  });
 
   let list = [];
   let company_id = dosetrack_user.company_id.$oid;
@@ -31,11 +31,9 @@
   let modal;
   let dosimeters = [];
 
-
-
   async function fetchUsers(company_id) {
     const res = await fetch(`${API_URL}/users/${company_id}`);
-    
+
     if (res.ok) {
       let list = await res.json();
       return list;
@@ -46,7 +44,7 @@
 
   async function fetchOperators() {
     const res = await fetch(`${API_URL}/operators/${company_id}`);
-    
+
     if (res.ok) {
       list = await res.json();
       return list;
@@ -54,7 +52,7 @@
       throw new Error("No se pudo obtener la lista de operadores");
     }
   }
-  
+
   const content = (list) => {
     return {
       headers: [
@@ -76,8 +74,7 @@
 
     //TODO: Ver si es necesario eliminar el usuario de la base de datos
 
-    console.log(user)
-    
+    console.log(user);
   };
 
   const editUser = (event) => {
@@ -85,10 +82,9 @@
     let user = event.detail.user;
     console.log(user);
   };
-
 </script>
 
-<Section title="Usuarios">
+<Section title="Administrador">
   {#await promise}
     Esperando...
   {:then lista}
@@ -101,9 +97,7 @@
     <!-- {error.message} -->
   {/await}
   <!-- Modal -->
-    
 </Section>
 
 <style>
-
 </style>

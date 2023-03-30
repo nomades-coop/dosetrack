@@ -6,6 +6,9 @@
 ### Obtener todos los films
 GET http://localhost:8000/film/by_company/{{companyId}}
 
+### Obtener todos los films de un periodo
+GET http://localhost:8000/film/by_company/{{companyId}}?period=202304
+
 ### Obtener un operador por su Id
 
 GET http://localhost:8000/film/629549627ce585bd5d33124b

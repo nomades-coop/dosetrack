@@ -60,7 +60,7 @@
     document.getElementById("filmModalForm").innerHTML = title || "Nuevo Film";
 
     document.getElementById("film_id").value = film._id.$oid;
-    document.getElementById("operator_id").value = film.operator._id.$oid;
+    // document.getElementById("operator_id").value = film.operator._id.$oid;
     document.getElementById("company_code").value = film.company_code;
     document.getElementById("film_period_id").value = film.period._id.$oid;
 
@@ -77,13 +77,13 @@
       isRequiredRule,
       "Este dato es obligatorio"
     );
-    setError(
-      errors,
-      data,
-      "operator_id",
-      isRequiredRule,
-      "Este dato es obligatorio"
-    );
+    // setError(
+    //   errors,
+    //   data,
+    //   "operator_id",
+    //   isRequiredRule,
+    //   "Este dato es obligatorio"
+    // );
     setError(
       errors,
       data,
@@ -110,8 +110,9 @@
       data._id = data.film_id;
       delete data.film_id;
     }
-    if (data.operator_id === "") delete data.operator_id;
+    // if (data.operator_id === "") delete data.operator_id;
 
+    data.company_id = company_id;
     console.log({ data });
 
     errors = {};
@@ -211,10 +212,10 @@
           style="display: none"
         />
         <div class="modal-body">
-          <div class="mb-3">
+          <!-- <div class="mb-3">
             <OperatorSelector bind:this={operatorSelector} {operators} />
             <FormError err={errors.operator_id} />
-          </div>
+          </div> -->
           <div class="mb-3">
             <label for="company_code" class="form-label">Código</label>
             <input

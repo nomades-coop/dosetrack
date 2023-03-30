@@ -13,7 +13,7 @@
     return {
       headers: [
         { _id: { title: "", type: "_id" } },
-        { operator: { title: "Operador", type: "obj", accesor: "name" } },
+        // { operator: { title: "Operador", type: "obj", accesor: "name" } },
         { company_code: { title: "Código", type: "str" } },
         { period: { title: "Periodo", type: "obj", accesor: "period" } },
         { status: { title: "Status", type: "str" } },

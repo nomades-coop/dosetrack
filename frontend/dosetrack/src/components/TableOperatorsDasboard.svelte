@@ -97,7 +97,7 @@
                   {:else if content.headers[i].type === "date"}
                     {new Date(column[1]).toISOString().split("T")[0]}
                   {:else if content.headers[i].type === "dosis"}
-                    {random(5, 100)} mSv
+                    {200} mSv
                   {:else}
                     {column[1]}
                   {/if}

@@ -77,10 +77,23 @@
 
 <Section title="Operadores en situación crítica!" showToolbar="">
   <div class="alert alert-danger d-flex justify-content-between" role="alert">
-    <span class="dosis-op">Centurión, Pablo</span>
-    <span class="dosis"
-      >{totalDoses} <span style="font-size: 12pt;">mSv</span>
-    </span>
+    <span class="dosis-op">Cosme, Fulanito</span>
+    <span class="dosis">200 <span style="font-size: 12pt;">mSv</span> </span>
+  </div>
+
+  <div class="alert alert-danger d-flex justify-content-between" role="alert">
+    <span class="dosis-op">Lopez, Juan</span>
+    <span class="dosis">200 <span style="font-size: 12pt;">mSv</span> </span>
+  </div>
+
+  <div class="alert alert-danger d-flex justify-content-between" role="alert">
+    <span class="dosis-op">Mansoi, Juana</span>
+    <span class="dosis">200 <span style="font-size: 12pt;">mSv</span> </span>
+  </div>
+
+  <div class="alert alert-danger d-flex justify-content-between" role="alert">
+    <span class="dosis-op">Perez, Andres</span>
+    <span class="dosis">200 <span style="font-size: 12pt;">mSv</span> </span>
   </div>
 </Section>
 
@@ -94,7 +107,6 @@
     no andó
   {/await}
 </Section>
-<button class="btn btn-primary">Decargar CSV</button>
 
 <style>
   .dosis {

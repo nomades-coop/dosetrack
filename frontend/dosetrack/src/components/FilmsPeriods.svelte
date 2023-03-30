@@ -4,15 +4,20 @@
   import IMask from "imask"; //from https://imask.js.org/
   import FaSave from "svelte-icons-pack/fa/FaSave";
   import Icon from "svelte-icons-pack";
-  import { getFilmsByCompany } from "../services/films";
+  import { getFilmsByCompany, saveFilmDose } from "../services/films";
   import { UserStore } from "../store";
   import API_URL from "../settings";
   import PeriodInput from "./PeriodInput.svelte";
+  import { periods_by_company } from "../services/periods";
+  import { toast } from "@zerodevx/svelte-toast";
+  import ImCheckmark from "svelte-icons-pack/im/ImCheckmark";
+  import ImCross from "svelte-icons-pack/im/ImCross";
 
-  export let company = null;
-  export let year = new Date().getFullYear();
+  export let company_id = null;
+  export let period = null;
   export let operators = [];
 
+  let films = [];
   let masked_control = [];
   let months = Array(12)
     .fill()
@@ -20,15 +25,14 @@
 
   onMount(async () => {
     console.log("Mounted FilmsPeriods");
-    console.log({ operators });
   });
 
-  afterUpdate(async () => {
-    console.log("updated...");
-    console.log("Doc", document.getElementById("62eeb7ec0c11652e03b5e6b7"));
-    let numbers = [...document.getElementsByClassName("number")];
-    console.log({ numbers });
+  films = async () => {
+    return await getFilmsByCompany(company_id, period.period);
+  };
 
+  afterUpdate(async () => {
+    let numbers = [...document.getElementsByClassName("number")];
     numbers.forEach((x) => {
       masked_control.push(
         IMask(x, {
@@ -49,183 +53,98 @@
   });
 
   // send table row as json to server
-  async function saveFilm(film) {
-    console.log(film);
-    let response = await fetch(`${API_URL}/film_dose`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(film),
+  async function savePeriodDoses(period_id = null) {
+    let show_toast_error = false;
+    let dose_cards = document.querySelectorAll(
+      `.period[period_id="${period_id}"] .film-dose`
+    );
+
+    dose_cards.forEach((card) => (card.style = "background-color:#6084b9"));
+
+    // convierto la nodelist a array
+    // por cada elemento selecciono los valores de dosis y film
+    let film_doses = Array.prototype.slice.call(dose_cards).map((d) => {
+      return {
+        company_id: company_id,
+        period_id: period_id,
+        operator_id: d.attributes.operator_id.value,
+        film_id: d.querySelector("#operator_film").value,
+        dose: parseInt(d.querySelector("#operator_dose").value),
+      };
     });
-    let result = await response.json();
-    console.log(result);
+
+    film_doses.forEach(async (film_dose) => {
+      let result = await saveFilmDose(film_dose);
+
+      if (result.error) {
+        toast.push("Corrija las tarjetas con error");
+        let error_dose_cards = document.querySelectorAll(
+          `.film-dose[period_id="${period_id}"][operator_id="${film_dose.operator_id}"]`
+        );
+        error_dose_cards.forEach(
+          (card) => (card.style = "background-color:#ff5656")
+        );
+      }
+    });
   }
 </script>
 
-<h2>
-  Período 2023:01
-  <div class="btn-container">
-    <button class="btn btn-success btn-sm">✔️</button>
-    <button class="btn btn-danger btn-sm">✖️</button>
-  </div>
-</h2>
-
-<div class="row">
-  <div class="col">
-    Desde
-    <input
-      type="date"
-      class="form-control"
-      id="fecha_desde"
-      name="fecha_desde"
-    />
-  </div>
-  <div class="col">
-    Hasta
-    <input
-      type="date"
-      class="form-control"
-      id="fecha_hasta"
-      name="fecha_hasta"
-    />
-  </div>
-</div>
-<div class="mb-3 mt-3" />
-
-<div class="flex-container longhand">
-  <div class="flex-item">
-    <h3>Juan C.</h3>
-    <h5>DNI 22999777</h5>
-
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1">🪪</span>
-      <select class="form-select" aria-label="Default select example">
-        <option selected>Open this select menu</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
-      </select>
+<div class="period" period_id={period._id.$oid}>
+  <h2>
+    Período {period.period.slice(0, 4)}-{period.period.slice(-2)}
+    <div class="btn-container">
+      <button
+        on:click={savePeriodDoses(period._id.$oid)}
+        class="btn btn-success btn-lg"
+        ><Icon src={ImCheckmark} color="red" /></button
+      >
+      <!-- <button class="btn btn-danger btn"
+        ><Icon src={ImCross} color="gray" /></button
+      > -->
     </div>
+  </h2>
 
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1">🪪</span>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Código Film"
-        aria-label="Username"
-        aria-describedby="basic-addon1"
-      />
-    </div>
+  <div class="mb-3 mt-3" />
 
-    <div class="input-group mb-3">
-      <span class="input-group-text" id="basic-addon1">☢️</span>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Dosis en mSrv"
-        aria-label="Username"
-        aria-describedby="basic-addon1"
-      />
-    </div>
-  </div>
-
-  <div class="flex-item">2</div>
-  <div class="flex-item">3</div>
-  <div class="flex-item">4</div>
-</div>
-
-<hr />
-<div class="text-center">
-  <button class="btn btn-primary">Nuevo Período</button>
-</div>
-
-<h1 class="pepe" id="valores">{year}</h1>
-
-<div class="table-responsive">
-  <table class="table table-striped table-hover table-sm">
-    <thead>
-      <tr>
-        <th style="display:none;" />
-        <th>Operador</th>
-        <th>FILM</th>
-
-        {#each months as month}
-          <th style="text-align:center">{month}</th>
-        {/each}
-        <th>Acumulado</th>
-      </tr>
-    </thead>
-    <tbody>
+  {#await films()}
+    <h1>espera</h1>
+  {:then films}
+    <div class="flex-container longhand">
       {#each operators as operator (operator._id.$oid)}
-        <tr id={operator._id.$oid}>
-          <td
-            ><h3><span class="badge bg-primary">{operator.name}</span></h3>
-          </td>
-          <!-- <td style="min-width:150px"><FilmSelector {films} minimal={true}/></td> -->
+        <div
+          class="film-dose"
+          operator_id={operator._id.$oid}
+          period_id={period._id.$oid}
+        >
+          <h3>{operator.name}</h3>
+          <h5>DNI {operator.dni}</h5>
 
-          <td style="min-width:150px"
-            ><input
-              id="{company}{operator._id.$oid}"
-              type="text"
-              class="form-control"
-              value="AKM997"
-            /></td
-          >
-          <td style="min-width:5em">
-            <input
-              id="coso"
-              type="text"
-              class="form-control number"
-              value="0.00"
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">🪪</span>
+            <FilmSelector
+              id="operator_film"
+              minimal={true}
+              custom_class="bolder-film-selector"
+              {films}
             />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td style="min-width:5em">
-            <input type="text" class="form-control number" value="0.00" />
-          </td>
-          <td>
-            <button class="btn btn-success icon" on:click={saveFilm}>
-              <Icon size="20px" src={FaSave} />
-            </button>
-          </td>
-        </tr>
+          </div>
+
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">☢️</span>
+            <input
+              id="operator_dose"
+              type="number"
+              value=""
+              class="form-control dosis"
+              placeholder="Dosis en mSv"
+              aria-label="Username"
+              aria-describedby="basic-addon1"
+            />
+          </div>
+        </div>
       {/each}
-    </tbody>
-  </table>
+    </div>
+  {/await}
 </div>
 
 <style>
@@ -252,12 +171,12 @@
     flex-flow: wrap row;
   }
 
-  .flex-item {
+  .film-dose {
     background: rgb(96, 132, 185);
-    padding: 5px;
+    padding: 13px;
     border-radius: 9px;
     margin: 10px;
-
+    max-width: 18em;
     /* line-height: 100px; */
     color: white;
     font-weight: bold;
@@ -265,17 +184,19 @@
     text-align: center;
   }
 
-  .number {
-    text-align: right;
-    min-width: 5em;
-  }
-
-  .icon {
-    padding-top: 0.2em;
-    padding-bottom: 0.5em;
-  }
-
   .btn-container {
     float: right;
+  }
+
+  .dosis {
+    font-size: 20pt;
+    text-align: center;
+    font-weight: bolder;
+    padding: 0;
+    color: #5a5353;
+  }
+
+  .period {
+    margin-top: 15px;
   }
 </style>

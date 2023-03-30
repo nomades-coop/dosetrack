@@ -21,7 +21,12 @@
 	/* 25% of parent */
 }
 
-
+.bolder-film-selector {
+	text-align: center;
+	font-weight: bolder !important;
+	color: #5a5353 !important;
+	border-radius: 5px !important;
+}
 
 /* html,
 body {
