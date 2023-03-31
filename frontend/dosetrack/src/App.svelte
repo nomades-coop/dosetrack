@@ -82,6 +82,8 @@
           `Dosetrack database does not have a user with this email ${$user["email"]}`
         );
       }
+    } else {
+      login();
     }
 
     registration_form.classList.remove("visually-hidden");
@@ -134,7 +136,6 @@
   <div class="container-fluid">
     <div class="row">
       <NavBar />
-
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
         {#if $isAuthenticated && (dosetrack_user || dosetrack_operator)}
           <Router {routes} />
