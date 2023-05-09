@@ -1,4 +1,4 @@
-FROM rust:slim
+FROM debian:buster-slim
 
 ENV TZ=America/Argentina/Buenos_Aires
 RUN ln -snf /usr/share/zoneinfo/$TZ etc/localtime && \
@@ -31,10 +31,6 @@ ENV API_SERVER_URL=${API_SERVER_URL}
 ENV FRONTEND_PATH=${FRONTEND_PATH}
 
 RUN apt update && apt install curl -y && apt install wget -y
-# RUN apk update && apk add --no-cache curl && apk add --no-cache wget
-
-# RUN apk add --no-cache nodejs npm
-
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
   apt -y install nodejs && \
   npm install -g npm 
@@ -51,10 +47,10 @@ WORKDIR /app
 RUN wget -q https://github.com/nomades-coop/dosetrack/releases/download/v0.1.0/dosetrack-api && \
   chmod +x dosetrack-api
 
-# RUN echo 'alias l="ls -CF"' >> ~/.bashrc && \
-#   echo 'alias la="ls -A"' >> ~/.bashrc && \
-#   echo 'alias ll="ls -halF"' >> ~/.bashrc && \
-#   echo 'alias ls="ls --color=auto"' >> ~/.bashrc 
+RUN echo 'alias l="ls -CF"' >> ~/.bashrc && \
+  echo 'alias la="ls -A"' >> ~/.bashrc && \
+  echo 'alias ll="ls -halF"' >> ~/.bashrc && \
+  echo 'alias ls="ls --color=auto"' >> ~/.bashrc 
 
 EXPOSE 80
 EXPOSE 443

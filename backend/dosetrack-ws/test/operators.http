@@ -1,6 +1,11 @@
 # Local variables
-@companyId = abca535261245abfcd4da31a
+@companyId = 6425a424f245dec56f0a4f48
 @dosimeterId = bdca535261245abfcd11aea3
+@periodId = 6425b8f4f245dec56f0a4f4c
+
+###
+
+GET http://localhost:8000/operators/doses/{{companyId}}/{{periodId}}
 
 ### Obtener todos los operators
 GET http://localhost:8000/operators/{{companyId}}

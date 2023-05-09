@@ -1,16 +1,15 @@
 <script>
-  import { beforeUpdate, onMount } from "svelte";
-  import FaSave from "svelte-icons-pack/fa/FaSave";
-  import Icon from "svelte-icons-pack";
-  import { operators_by_company } from "../services/operators";
-  import { periods_by_company } from "../services/periods";
-  import { getFilmsByCompany } from "../services/films";
+  import { onMount } from "svelte";
+
   import { UserStore } from "../store";
   import FilmsPeriods from "../components/FilmsPeriods.svelte";
+
+  import * as OperatorsService from "../services/operators";
 
   let dosetrack_user = {};
   let auth0_user = {};
   auth0_user = {};
+
   UserStore.subscribe((data) => {
     dosetrack_user = data.Dosetrack;
     auth0_user = data.Auth0;
@@ -19,25 +18,25 @@
   let company_id = dosetrack_user.company_id.$oid;
 
   // get the list of operators operators_by_company asyn function
-  let operators = [];
+  let periods_data = [];
   let periods = [];
-  let films = [];
-
-  // beforeUpdate(async () => {
-  //   console.log("beforeUpdate...");
-  //   console.log({ operators });
-  //   console.log({ periods });
-  //   // console.log({ films });
-  // });
 
   onMount(async () => {
-    operators = await operators_by_company(company_id);
-    periods = await periods_by_company(company_id);
-    // films = await getFilmsByCompany(company_id, "202304");
-    // console.log({operators, periods, films})
+    periods_data = async () => {
+      return await OperatorsService.getPeriodsData(company_id, null);
+    };
+
+    periods = await periods_data();
+    console.log(periods);
   });
 </script>
 
-{#each periods as period}
-  <FilmsPeriods {company_id} {operators} {period} />
-{/each}
+{#await periods}
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+{:then periods}
+  {#each periods as period}
+    <FilmsPeriods {company_id} {period} />
+  {/each}
+{/await}

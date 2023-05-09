@@ -1,6 +1,6 @@
 import API_URL from "../settings";
 
-export const periods_by_company = async (company_id) => {
+export const getByCompany = async (company_id) => {
   const res = await fetch(`${API_URL}/period/by_company/${company_id}`);
 
   if (res.ok) {

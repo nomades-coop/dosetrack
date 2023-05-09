@@ -15,9 +15,7 @@ export const getUser = async (email) => {
 
   const user = await fetchUserByEmail(email);
 
-  if (user) {
-    console.log(user);
-  } else {
+  if (!user) {
     console.log('Failed to fetch user by email.');
   }
 

@@ -1,28 +1,22 @@
 <script>
   import FormError from "./FormError.svelte";
-  import {
-    isDateRule,
-    isRequiredRule,
-    isFormValid,
-    setError,
-  } from "../validations";
+  import { isRequiredRule, isFormValid, setError } from "../validations";
   import { onMount } from "svelte";
   import API_URL from "../settings";
   import { createEventDispatcher } from "svelte";
-  import IMask from "imask"; //from https://imask.js.org/
-  import { operators_by_company } from "../services/operators";
-  import { periods_by_company } from "../services/periods";
-  import OperatorSelector from "./OperatorSelector.svelte";
+
+  import * as OperatorsService from "../services/operators";
+  import * as PeriodsService from "../services/periods";
+
   import PeriodSelector from "./PeriodSelector.svelte";
 
   export let company_id = "";
   let errors = {};
   let modal;
-  let maskOptions;
-  let mask;
+
   let operators = [];
   let periods = [];
-  let operatorSelector;
+
   let periodSelector;
 
   const dispatch = createEventDispatcher();
@@ -31,10 +25,10 @@
     // console.log(company_id);
     modal = new bootstrap.Modal("#filmModal");
 
-    operators = await operators_by_company(company_id, true);
+    operators = await OperatorsService.getByCompany(company_id, true);
     operators = operators.sort((a, b) => (a.name > b.name ? 1 : -1));
 
-    periods = await periods_by_company(company_id);
+    periods = await PeriodsService.getByCompany(company_id);
   });
 
   export function show() {

@@ -2,22 +2,17 @@
   import { afterUpdate, onMount } from "svelte";
   import FilmSelector from "../components/FilmSelector.svelte";
   import IMask from "imask"; //from https://imask.js.org/
-  import FaSave from "svelte-icons-pack/fa/FaSave";
   import Icon from "svelte-icons-pack";
   import { getFilmsByCompany, saveFilmDose } from "../services/films";
-  import { UserStore } from "../store";
-  import API_URL from "../settings";
-  import PeriodInput from "./PeriodInput.svelte";
-  import { periods_by_company } from "../services/periods";
   import { toast } from "@zerodevx/svelte-toast";
   import ImCheckmark from "svelte-icons-pack/im/ImCheckmark";
-  import ImCross from "svelte-icons-pack/im/ImCross";
 
   export let company_id = null;
   export let period = null;
-  export let operators = [];
+  let operators = period.operators;
 
   let films = [];
+
   let masked_control = [];
   let months = Array(12)
     .fill()
@@ -31,7 +26,7 @@
     return await getFilmsByCompany(company_id, period.period);
   };
 
-  afterUpdate(async () => {
+  let operators2 = afterUpdate(async () => {
     let numbers = [...document.getElementsByClassName("number")];
     numbers.forEach((x) => {
       masked_control.push(
@@ -65,6 +60,7 @@
     // por cada elemento selecciono los valores de dosis y film
     let film_doses = Array.prototype.slice.call(dose_cards).map((d) => {
       return {
+        _id: d.attributes.dose_id.value,
         company_id: company_id,
         period_id: period_id,
         operator_id: d.attributes.operator_id.value,
@@ -107,12 +103,13 @@
   <div class="mb-3 mt-3" />
 
   {#await films()}
-    <h1>espera</h1>
+    <h1>Cargando operadores...</h1>
   {:then films}
     <div class="flex-container longhand">
       {#each operators as operator (operator._id.$oid)}
         <div
           class="film-dose"
+          dose_id={operator.film_doses[0]?._id.$oid ?? ""}
           operator_id={operator._id.$oid}
           period_id={period._id.$oid}
         >
@@ -120,24 +117,25 @@
           <h5>DNI {operator.dni}</h5>
 
           <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">🪪</span>
+            <span class="input-group-text adornito" id="basic-addon1">🪪</span>
             <FilmSelector
               id="operator_film"
               minimal={true}
+              selected={operator.film_doses[0]?.film_id.$oid ?? ""}
               custom_class="bolder-film-selector"
               {films}
             />
           </div>
 
           <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">☢️</span>
+            <span class="input-group-text adornito" id="basic-addon1">☢️</span>
             <input
               id="operator_dose"
               type="number"
-              value=""
+              value={operator.film_doses[0]?.dose ?? ""}
               class="form-control dosis"
               placeholder="Dosis en mSv"
-              aria-label="Username"
+              aria-label="Dosis"
               aria-describedby="basic-addon1"
             />
           </div>
@@ -198,5 +196,8 @@
 
   .period {
     margin-top: 15px;
+  }
+  .adornito {
+    font-size: 20pt;
   }
 </style>

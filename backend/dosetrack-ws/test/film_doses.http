@@ -22,7 +22,7 @@ GET http://localhost:8000/film_dose/{{company_id}}/{{operator_id}}
 POST http://localhost:8000/film_dose
 content-type: application/json
 
-{   "_id": "63e6511d9c3d54e194457bd3",
+{   
     "company_id": "{{company_id}}",
     "operator_id": "{{operator_id}}",
     "film_id": "{{film_id}}",
@@ -31,6 +31,18 @@ content-type: application/json
     
 }
 
+###
+POST http://localhost:8000/film_dose
+content-type: application/json
+
+{
+"_id": "6425f07af245dec56f0a4f73",
+"company_id": "6425a424f245dec56f0a4f48",
+"period_id": "6425b8f4f245dec56f0a4f4c",
+"operator_id": "6425b8bbf245dec56f0a4f4a",
+"film_id": "6425c92ff245dec56f0a4f4e",
+"dose": 12301
+}
 
 ###
 

@@ -12,10 +12,11 @@
   import API_URL from "../settings";
   import { createEventDispatcher } from "svelte";
   import IMask from "imask"; //from https://imask.js.org/
-  import { operators_by_company } from "../services/operators";
-  import { periods_by_company } from "../services/periods";
+  import * as OperatorsService from "../services/operators";
+  import * as PeriodsService from "../services/periods";
   import OperatorSelector from "./OperatorSelector.svelte";
   import PeriodSelector from "./PeriodSelector.svelte";
+  import Operators from "../routes/Operators.svelte";
 
   export let company_id = "";
 
@@ -51,10 +52,10 @@
     };
     mask = IMask(document.getElementById("period"), maskOptions);
 
-    operators = await operators_by_company(company_id, true);
+    operators = await OperatorsService.getByCompany(company_id, true);
     operators = operators.sort((a, b) => (a.name > b.name ? 1 : -1));
 
-    periods = await periods_by_company(company_id);
+    periods = await PeriodsService.getByCompany(company_id);
   });
 
   export function show() {

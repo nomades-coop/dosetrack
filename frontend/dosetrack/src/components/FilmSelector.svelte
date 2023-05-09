@@ -28,9 +28,13 @@
   aria-label="Selector de operadores"
   on:change={onchange}
 >
-  <option value="" selected>Seleccione un film</option>
+  <option value="">Seleccione un film</option>
   {#each films as film}
-    <option value={film._id.$oid}>{film.company_code}</option>
+    <option
+      value={film._id.$oid}
+      selected={film._id.$oid === selected ? "selected" : ""}
+      >{film.company_code}</option
+    >
   {/each}
 </select>
 <div id="operatorHelp" class="form-text {hide}">Seleccione un film</div>

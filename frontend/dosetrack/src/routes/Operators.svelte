@@ -12,7 +12,7 @@
   } from "../validations";
   import API_URL from "../settings";
   import { UserStore } from "../store";
-  import { operators_by_company } from "../services/operators";
+  import { getByCompany } from "../services/operators";
   import { getDosimetersByCompany } from "../services/dosimeter";
 
   import { toast } from "@zerodevx/svelte-toast";
@@ -47,7 +47,7 @@
   }
 
   async function fetchOperators() {
-    return await operators_by_company(company_id, true);
+    return await getByCompany(company_id, true);
   }
 
   const onSubmit = (e) => {

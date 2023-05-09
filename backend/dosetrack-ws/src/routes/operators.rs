@@ -16,6 +16,7 @@ use mongodb::{
 use crate::database;
 use crate::model::dosetrack::Dose;
 use crate::model::dosetrack::Operator;
+use crate::model::dosetrack::Period;
 use crate::utils::GenericError;
 use rocket::futures::TryStreamExt;
 use rocket::http::Status;
@@ -26,37 +27,64 @@ pub async fn get_by_company_with_doses(
     period: String,
     database: &State<database::MongoDB>,
 ) -> (Status, String) {
-    let collection = database.collection::<Operator>("operators");
+    let pipeline = vec![
+        doc! {
+            "$match": doc! {
+                "company_id": ObjectId::parse_str(&company_id).unwrap()
+            }
+        },
+        doc! {
+            "$lookup": doc! {
+                "from": "operators",
+                "localField": "company_id",
+                "foreignField": "company_id",
+                "let": doc! {
+                    "pid": "$_id"
+                },
+                "as": "operators",
+                "pipeline": [
+                    doc! {
+                        "$lookup": doc! {
+                            "from": "film_doses",
+                            "let": doc! {
+                                "pid": "$$pid"
+                            },
+                            "localField": "_id",
+                            "foreignField": "operator_id",
+                            "as": "film_doses",
+                            "pipeline": [
+                                doc! {
+                                    "$match": doc! {
+                                        "$expr": doc! {
+                                            "$eq": [
+                                                "$period_id",
+                                                "$$pid"
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+    ];
 
-    let col = Collation::builder().locale("es").build();
+    let collection = database.collection::<Period>("periods");
+    let mut cursor = collection.aggregate(pipeline, None).await.unwrap();
+    // get total items in cursor
+    // let total = cursor.count().await;
+    // println!("Comientza el while {}", total);
 
-    let filter = doc! {
-     "company_id": ObjectId::parse_str(&company_id).unwrap(),
-    };
-    let options = FindOptions::builder()
-        .projection(doc! {
-          "_id": 1,
-          "company_id": 1,
-          "name": 1,
-          "dni": 1,
-          "licence": 1,
-          "dosimeter_id": 1,
-          "status":1
-        })
-        .collation(col)
-        .sort(doc! {
-          "name": 1i32
-        })
-        .build();
+    let mut documents: Vec<Document> = Vec::new();
 
-    let mut cursor: Cursor<Operator> = collection.find(filter, options).await.unwrap();
-
-    let mut operators: Vec<Operator> = Vec::new();
-    while let Ok(Some(operator)) = cursor.try_next().await {
-        operators.push(operator);
+    // fill operators vector with cursor data
+    while let Ok(Some(result)) = cursor.try_next().await {
+        documents.push(bson::from_document(result).unwrap());
     }
 
-    (Status::Ok, json!(operators).to_string())
+    (Status::Ok, json!(documents).to_string())
 }
 
 #[get("/operators/<company_id>")]

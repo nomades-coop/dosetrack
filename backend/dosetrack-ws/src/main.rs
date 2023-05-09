@@ -10,7 +10,7 @@ mod model;
 mod routes;
 mod utils;
 
-use auth::GoogleUserInfo;
+// use auth::GoogleUserInfo;
 use routes::*;
 use std::error::Error;
 
@@ -64,7 +64,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _rocket = rocket::build()
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
-        // .mount("/", FileServer::from(frontend_path))
+        .mount("/", FileServer::from(frontend_path))
         .mount("/", routes![all_options, registration::new])
         .mount(
             "/dose",
@@ -100,6 +100,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 users::get_by_email,
                 users::create_or_update,
                 users::delete,
+                operators::get_by_company_with_doses,
                 operators::get_by_company,
                 operators::overdose,
                 operators::get,

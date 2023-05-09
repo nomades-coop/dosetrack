@@ -4,6 +4,9 @@
   import { onMount } from "svelte";
   import { useAuth0 } from "../services/auth0";
   import { newRegistration } from "../services/registration";
+  import { toast } from "@zerodevx/svelte-toast";
+  import { push, replace } from "svelte-spa-router";
+
   const { user, isAuthenticated } = useAuth0;
   import {
     isDateRule,
@@ -34,6 +37,7 @@
       errors = {};
       const json = await res.json();
       let result = JSON.stringify(json);
+      window.location.assign("/");
       console.log("POST result:", result);
     } else {
       errors = {};
