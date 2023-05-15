@@ -101,15 +101,15 @@
 
             <td nowrap style="text-align: end">
               <div class="flex-column">
-                <span class="btn btn-outline-primary" on:click={detail(row)}>
-                  <Icon src={IoNuclear} /></span
+                <button class="btn btn-outline-primary" on:click={detail(row)}>
+                  <Icon src={IoNuclear} /></button
                 >
-                <span
+                <button
                   class="btn btn-outline-primary mt-1 mb-1"
-                  on:click={edit(row)}><Icon src={BsPencilFill} /></span
+                  on:click={edit(row)}><Icon src={BsPencilFill} /></button
                 >
-                <span class="btn btn-outline-danger" on:click={remove(row)}
-                  ><Icon src={BsTrash2Fill} /></span
+                <button class="btn btn-outline-danger" on:click={remove(row)}
+                  ><Icon src={BsTrash2Fill} /></button
                 >
               </div>
             </td>

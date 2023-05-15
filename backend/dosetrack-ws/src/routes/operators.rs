@@ -131,7 +131,7 @@ pub async fn overdose(company_id: String, database: &State<database::MongoDB>) -
         doc! {
             "$match": {
                 "company_id": ObjectId::parse_str(&company_id).unwrap(),
-                "when": {"$gte": "ISODate('2022-05-01T00:00:00.000Z')"}
+                // "when": {"$gte": "ISODate('2022-05-01T00:00:00.000Z')"}
             }
         },
         doc! {

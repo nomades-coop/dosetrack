@@ -89,6 +89,7 @@
           <span
             class="nav-link"
             style="cursor:pointer"
+            on:keypress={toggleMenu}
             on:click={toggleMenu}
             on:click={() =>
               logout({

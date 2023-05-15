@@ -16,5 +16,12 @@ export const getPeriodsData = async (company_id, period_id, reload = false) => {
 
   return await periods;
 
-
 };
+
+export const getOverdoses = async (company_id, period_id, reload = false) => {
+  
+    let overdoses = await getCachedData('dosetrack.operators_overdoses', `${API_URL}/operators/overdose/${company_id}/${period_id}`, reload);
+  
+    return overdoses;
+  
+  }

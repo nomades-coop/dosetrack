@@ -76,14 +76,14 @@
 </script>
 
 <Section title="Operadores en situación crítica!" showToolbar="">
-  <div class="alert alert-danger d-flex justify-content-between" role="alert">
-    <span class="dosis-op">Cosme, Fulanito</span>
-    <span class="dosis">200 <span style="font-size: 12pt;">mSv</span> </span>
+  <div class="alert alert-success d-flex justify-content-between" role="alert">
+    <span class="dosis-op">Todo OK</span>
+    <span class="dosis"> <span style="font-size: 12pt;" /> </span>
   </div>
 
-  <div class="alert alert-danger d-flex justify-content-between" role="alert">
+  <!-- <div class="alert alert-danger d-flex justify-content-between" role="alert">
     <span class="dosis-op">Lopez, Juan</span>
-    <span class="dosis">200 <span style="font-size: 12pt;">mSv</span> </span>
+    <span class="dosis">200 <span style="font-size: 12pt;" /> </span>
   </div>
 
   <div class="alert alert-danger d-flex justify-content-between" role="alert">
@@ -94,7 +94,7 @@
   <div class="alert alert-danger d-flex justify-content-between" role="alert">
     <span class="dosis-op">Perez, Andres</span>
     <span class="dosis">200 <span style="font-size: 12pt;">mSv</span> </span>
-  </div>
+  </div> -->
 </Section>
 
 <Section title="Radiación acumulada anual">

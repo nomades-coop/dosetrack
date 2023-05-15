@@ -53,12 +53,10 @@
   };
 
   const remove = (user) => {
-    
     dispatch("remove", {
       user: toObject(user),
     });
   };
-
 </script>
 
 <div class="row">
@@ -81,7 +79,7 @@
           <tr class="align-middle" data-user-id={row[0][1].$oid}>
             {#each row as column, i}
               {#if content.headers[i].type != "_id"}
-                <td on:click={edit(i, row)}>
+                <td on:click={edit(i, row)} on:keypress={() => {}}>
                   {#if content.headers[i].type === "img"}
                     {column[1]}
                     <img src="" alt="" />
@@ -96,8 +94,8 @@
 
             <td nowrap style="text-align: end">
               <div class="flex-column">
-                <span class="btn btn-outline-danger" on:click={remove(row)}
-                  ><Icon src={BsTrash2Fill} /></span
+                <button class="btn btn-outline-danger" on:click={remove(row)}
+                  ><Icon src={BsTrash2Fill} /></button
                 >
               </div>
             </td>

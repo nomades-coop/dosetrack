@@ -50,3 +50,10 @@ GET http://localhost:8000/user/email/pcenturion@nuclearis.com
 ### Eliminar un usuario
 DELETE http://localhost:8000/user/6266bbe138a6e948659d5f4c
 
+###
+
+GET https://dosetrack-production.up.railway.app/users/email/pcenturion%40nuclearis.com
+
+###
+
+GET http://localhost:80/users/email/pcenturion%40nuclearis.com

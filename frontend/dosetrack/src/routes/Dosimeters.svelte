@@ -257,8 +257,4 @@
 </Section>
 
 <style>
-  .form-label {
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-  }
 </style>

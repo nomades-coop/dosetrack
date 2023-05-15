@@ -107,8 +107,8 @@
 
             <td nowrap style="text-align: end">
               <div class="flex-column">
-                <span class="btn btn-outline-primary" on:click={detail(row)}>
-                  <Icon src={IoNuclear} /></span
+                <button class="btn btn-outline-primary" on:click={detail(row)}>
+                  <Icon src={IoNuclear} /></button
                 >
               </div>
             </td>

@@ -109,11 +109,11 @@
             {/each}
             <td style="text-align: end">
               <div class="flex-column">
-                <span class="btn btn-outline-primary" on:click={edit(row)}
-                  ><Icon src={BsPencilFill} /></span
+                <button class="btn btn-outline-primary" on:click={edit(row)}
+                  ><Icon src={BsPencilFill} /></button
                 >
-                <span class="btn btn-outline-danger" on:click={remove(row)}
-                  ><Icon src={BsTrash2Fill} /></span
+                <button class="btn btn-outline-danger" on:click={remove(row)}
+                  ><Icon src={BsTrash2Fill} /></button
                 >
               </div>
             </td>
