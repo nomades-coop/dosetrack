@@ -2,9 +2,10 @@ use mongodb::bson::oid::ObjectId;
 use mongodb::bson::serde_helpers::bson_datetime_as_rfc3339_string;
 use mongodb::bson::DateTime;
 // use mongodb::bson::RawArrayBuf;
+
 use rust_decimal::prelude::*;
 use rust_decimal::Decimal;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum UserRole {
@@ -124,6 +125,21 @@ pub struct Film {
     pub status: DosimeterStatus,
 }
 
+fn decimal_to_float<S>(x: &Decimal, s: S) -> Result<S::Ok, S::Error>
+where
+    S: Serializer,
+{
+    s.serialize_f64(x.to_f64().unwrap())
+}
+
+fn float_to_decimal<'de, D>(deserializer: D) -> Result<Decimal, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let f = f64::deserialize(deserializer)?;
+    Ok(Decimal::from_f64(f).unwrap())
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FilmDose {
     pub _id: Option<ObjectId>,
@@ -131,6 +147,11 @@ pub struct FilmDose {
     pub operator_id: Option<ObjectId>,
     pub film_id: Option<ObjectId>,
     pub period_id: ObjectId,
+    // #[serde(with = "rust_decimal::serde::float")]
+    #[serde(
+        serialize_with = "decimal_to_float",
+        deserialize_with = "float_to_decimal"
+    )]
     pub dose: Decimal,
 }
 
@@ -164,6 +185,10 @@ pub struct Dose {
     pub company_id: ObjectId,
     pub operator_id: ObjectId,
     pub dosimeter_id: ObjectId,
+    #[serde(
+        serialize_with = "decimal_to_float",
+        deserialize_with = "float_to_decimal"
+    )]
     pub dose: Decimal,
     pub picture: Option<String>,
     pub when: DateTime,

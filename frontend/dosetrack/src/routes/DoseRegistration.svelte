@@ -3,8 +3,10 @@
   import Section from "../components/Section.svelte";
   import API_URL from "../settings";
   import { onMount } from "svelte";
+  import { toast } from "@zerodevx/svelte-toast";
+
   // import {UserStore} from "../store";
-  
+
   // let dosetrack_user = {};
   // let auth0_user = {};
   // auth0_user = {};
@@ -25,12 +27,11 @@
   onMount(async () => {
     if (operator) {
       getOperator(operator);
-      
+
       doseDiv = document.getElementById("error");
       doseInput = document.getElementById("dose");
       doseDiv.classList.remove("error");
     }
-
   });
 
   const getOperator = async (op) => {
@@ -103,10 +104,16 @@
 
     const res = await fetch(`${API_URL}/dose`, fetchConfig);
 
-    const json = await res.json();
-    let result = JSON.stringify(json);
-    doseDiv.classList.remove("error");
-    console.log(result);
+    if (res.ok) {
+      const json = await res.json();
+      let result = JSON.stringify(json);
+      doseDiv.classList.remove("error");
+      toast.push("Dosis registrada exitosamente");
+      doseInput.value = "";
+      console.log(result);
+    } else {
+      toast.push("No se pudo registrar la dosis");
+    }
   };
 </script>
 
