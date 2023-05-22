@@ -189,7 +189,7 @@
       class="form-control"
       name="user_name"
       id="user_name"
-      value={$user.given_name}
+      value={$user.given_name ?? ""}
       maxlength="100"
       aria-describedby="user_nameHelp"
     />
@@ -204,7 +204,7 @@
       class="form-control"
       name="user_last_name"
       id="user_last_name"
-      value={$user.family_name}
+      value={$user.family_name ?? ""}
       maxlength="100"
       aria-describedby="user_last_nameHelp"
     />

@@ -64,13 +64,15 @@
       cache: "no-cache",
     };
 
-    const res = await fetch(`${API_URL}/operators/${company_id}`);
-    tableData = await res.json();
+    if (company_id) {
+      const res = await fetch(`${API_URL}/operators/${company_id}`);
+      tableData = await res.json();
 
-    if (res.ok) {
-      return tableData;
-    } else {
-      throw new Error("No se pudo obtener la lista de dosimetros");
+      if (res.ok) {
+        return tableData;
+      } else {
+        throw new Error("No se pudo obtener la lista de dosimetros");
+      }
     }
   }
 </script>
@@ -97,7 +99,7 @@
   </div> -->
 </Section>
 
-<Section title="Radiación acumulada anual">
+<!-- <Section title="Radiación acumulada anual">
   {#await promise}
     Esperando...
   {:then lista}
@@ -106,7 +108,7 @@
     {error.message}
     no andó
   {/await}
-</Section>
+</Section> -->
 
 <style>
   .dosis {

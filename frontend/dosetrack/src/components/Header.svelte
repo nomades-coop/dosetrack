@@ -32,8 +32,8 @@
       {#if dosetrack_operator}
         {dosetrack_operator.name}
       {:else}
-        {$user.family_name},
-        {$user.given_name}
+        {$user.family_name ?? "¡Hola"},
+        {$user.given_name ?? "Bienvenido!"}
       {/if}
     </h4>
   {/if}

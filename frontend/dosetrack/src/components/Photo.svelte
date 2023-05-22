@@ -90,6 +90,7 @@
     dispatch("newPhoto", {
       picture: imgData,
     });
+    // reset();
   };
 </script>
 
@@ -117,7 +118,7 @@
 <div data-desc="button-bar" class="d-flex justify-content-center mt-3 mb-2">
   <button
     bind:this={cameraStart}
-    class="btn btn-danger btn-lg "
+    class="btn btn-danger btn-lg"
     on:click={() => obtenerVideoCamara("environment")}
   >
     {#if showIcon}
@@ -129,16 +130,16 @@
     {/if}
   </button>
   <div bind:this={cameraShot} class="d-none d-flex">
-    <button class="btn btn-primary btn-lg  fs-3" on:click={takePicture}
+    <button class="btn btn-primary btn-lg fs-3" on:click={takePicture}
       ><Icon src={BiSolidCamera} color="#fff" /></button
     >
     <button
-      class="btn btn-primary btn-lg  fs-3"
+      class="btn btn-primary btn-lg fs-3"
       style="margin: 0 1em 0 1em;"
       on:click={changeCamera}
       ><Icon src={IoCameraReverse} color="#fff" /></button
     >
-    <button class="btn btn-danger btn-lg  fs-3" on:click={reset}
+    <button id="photo.reset" class="btn btn-danger btn-lg fs-3" on:click={reset}
       ><Icon src={BiReset} color="#fff" /></button
     >
   </div>

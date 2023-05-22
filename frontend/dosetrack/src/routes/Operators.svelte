@@ -305,7 +305,7 @@
                 aria-describedby="nameHelp"
               />
               <div id="nameHelp" class="form-text">
-                Nombre y Apellido del operador
+                Apellido y nombre del operador (ej.: Perez, Juan)
               </div>
               <div id="nameHelp" class="invalid-feedback">Dosimeter's name</div>
               <FormError err={errors.name} />
@@ -374,7 +374,9 @@
                 <option value="Enabled" selected>Habilitado</option>
                 <option value="Disabled">Deshabilitado</option>
               </select>
-              <div id="statusHelp" class="form-text">Dosimeter status</div>
+              <div id="statusHelp" class="form-text">
+                Si el operador está habilitado
+              </div>
             </div>
 
             <div id="token-container" class="mb-3 d-none">

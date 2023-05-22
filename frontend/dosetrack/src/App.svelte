@@ -27,6 +27,8 @@
   import DoseRegistration from "./routes/DoseRegistration.svelte";
 
   import { SvelteToast } from "@zerodevx/svelte-toast";
+  import { replace } from "svelte-spa-router";
+
   const toast_options = {};
 
   let {
@@ -41,6 +43,10 @@
 
   let dosetrack_user = null;
   let dosetrack_operator = null;
+
+  // si el url es /?company se muestra el formulario de registro de empresa
+  const urlParams = new URLSearchParams(window.location.search);
+  const register_a_company = urlParams.has("company");
 
   const authenticationGuard = (ctx, next) => {
     if ($isAuthenticated) {
@@ -114,6 +120,7 @@
     if (res.ok) {
       let operator = await res.json();
       window.localStorage.setItem("operator", JSON.stringify(operator));
+      window.location.replace("/");
     } else {
       errors["token"] = { error: [] };
       errors["token"]["error"].push(
@@ -142,39 +149,46 @@
         {:else}
           <div id="registration_form" class="visually-hidden">
             {#if $isAuthenticated}
-              <Section
-                title="Bienvenido {$user.name}"
-                subtitle="Registrarme como operador"
-              >
-                <div class="mb-3">
-                  <label for="name" class="form-label"
-                    >Por favor ingrese su token de indentificación</label
-                  >
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="token"
-                    id="token"
-                    aria-describedby="nameHelp"
-                  />
-                  <div id="nameHelp" class="form-text">
-                    El token se lo debe proporcionar su empleador.
+              {#if !register_a_company}
+                <Section
+                  title="Bienvenido {$user.name}"
+                  subtitle="Registrarme como operador"
+                >
+                  <div class="mb-3">
+                    <label for="name" class="form-label"
+                      >Por favor ingrese su token de indentificación</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="token"
+                      id="token"
+                      aria-describedby="nameHelp"
+                    />
+                    <div id="nameHelp" class="form-text">
+                      El token se lo debe proporcionar su empleador.
+                    </div>
+                    <FormError err={errors.token} />
                   </div>
-                  <FormError err={errors.token} />
-                </div>
 
-                <div class="text-center">
-                  <button on:click={setOperator} class="btn btn-primary btn-lg"
-                    >Ingresar como operador</button
-                  >
-                </div>
-              </Section>
-              <Section
-                title="Nueva Empresa"
-                subtitle="Registrar mi empresa y mi usuario como administrador"
-              >
-                <NewCompany />
-              </Section>
+                  <div class="text-center">
+                    <button
+                      on:click={setOperator}
+                      class="btn btn-primary btn-lg"
+                      >Ingresar como operador</button
+                    >
+                  </div>
+                </Section>
+              {/if}
+
+              {#if register_a_company}
+                <Section
+                  title="Nueva Empresa"
+                  subtitle="Registrar mi empresa y mi usuario como administrador"
+                >
+                  <NewCompany />
+                </Section>
+              {/if}
             {/if}
             <div class="row p-5">
               <AuthenticationButton />

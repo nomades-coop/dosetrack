@@ -110,7 +110,10 @@
       doseDiv.classList.remove("error");
       toast.push("Dosis registrada exitosamente");
       doseInput.value = "";
-      console.log(result);
+      // reset photo
+      fotito = null;
+      document.getElementById("photo.reset").click();
+      // console.log(result);
     } else {
       toast.push("No se pudo registrar la dosis");
     }
