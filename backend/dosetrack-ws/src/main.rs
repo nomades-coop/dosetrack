@@ -66,7 +66,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let _rocket = rocket::build()
         .attach(Shield::new())
         .attach(database::init().await) // connect to the database
-        // .mount("/", FileServer::from(frontend_path))
+        .mount("/", FileServer::from(frontend_path))
         .mount("/", routes![all_options, registration::new])
         .mount(
             "/dose",
