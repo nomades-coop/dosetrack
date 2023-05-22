@@ -20,13 +20,15 @@ Los períodos son ventanas de tiempo que se utilizan para enmarcar los datos rec
 
 Para registrar los films, primero debe crear un período de carga de datos del mismo. Siga estas instrucciones:
 
-![Nuevo dosímetro](img/create%20periods.png)
+<img src="img/create%20periods.png"  style="width:50%;margin-left: 50pt">
 
 1. Haga click en "Dosímetros" en el menú de la izquierda.
 
 2. Presiones el botón "Nuevo Período"
 
-3. Complete los datos del período. ![Nuevo período](img/nuevo%20periodo.png)
+3. Complete los datos del período.
+
+<img src="img/nuevo%20periodo.png" style="width:50%;margin-left: 50pt">
 
 4. Presione el botón "Guardar"
 
@@ -34,17 +36,27 @@ Para registrar los films, primero debe crear un período de carga de datos del m
 
 Para registrar un film, primero debe crear un período, vea el párrafo anterior. Para registrar un film, siga estos pasos:
 
-1. Preione el boton "Nuevo Film". ![Nuevo film](img/nuevo%20film0.png)
-2. Complete el formulario. El campo "Código" es un campo que debe usar internamente para identificar el film. ![Film](img/nuevo%20film.png)
+1. Preione el boton "Nuevo Film". 
+
+<img src="img/nuevo%20film0.png" style="width:50%;margin-left: 50pt">
+
+2. Complete el formulario. El campo "Código" es un campo que debe usar internamente para identificar el film. 
+
+<img src="img/nuevo%20film.png" style="width:50%;margin-left: 50pt">
+
 3. Presione "Guardar"
 
 ## Registrar dosímetros digitales
 
 Una vez creado el período, puede registrar los dosímetros:
 
-1. Presione el botón "Nuevo Dosímetro" ![Nuevo Dosímetro](img/nuevo%20dosimetro1.png)
+1. Presione el botón "Nuevo Dosímetro" 
 
-2. Complete los datos del dosímetro ![Nuevo dosímetro](img/nuevo%20dosimetro2.png)
+<img src="img/nuevo%20dosimetro1.png" style="width:50%;margin-left: 50pt">
+
+2. Complete los datos del dosímetro 
+
+<img src="img/nuevo%20dosimetro2.png" style="width:50%;margin-left: 50pt">
 
 3. Presione el botón "Guardar".
 
@@ -54,9 +66,13 @@ Registre todos los dosímetros necesarios.
 
 Los operadores son quienes manipulan el equipamiento e insumos. Para registrar un operador siga estos pasos:
 
-1. Siga el menu "Operadores" y presione el botón "Crear Operador" ![Menu Operadores](img/menu%20operadores.png)
+1. Siga el menu "Operadores" y presione el botón "Crear Operador" 
 
-2. Complete el formulario del oeprador. ![Nuevo Operador](img/nuevo%20operador.png)
+<img src="img/menu%20operadores.png" style="width:50%;margin-left: 50pt">
+
+2. Complete el formulario del oeprador. 
+
+<img src="img/nuevo%20operador.png" style="width:50%;margin-left: 50pt">
 
 ### El token del operador
 
@@ -66,9 +82,13 @@ Este token se lo debe entregar al operador para que pueda registrar sus dosis. S
 
 Para obtener el token de un operador, siga estos pasos:
 
-1. Presione el ícono del lápiz del operador del cual quiere obtener su token. ![Edición del operador](img/edicion%20de%20operador.png)
+1. Presione el ícono del lápiz del operador del cual quiere obtener su token. 
 
-2. Se visuale el token del operador. ![Token del operador](img/operator%20token.png)
+<img src="img/edicion%20de%20operador.png" style="width:50%;margin-left: 50pt">
+
+2. Se visuale el token del operador. 
+
+<img src="img/operator%20token.png" style="width:50%;margin-left: 50pt">
 
 3. Haciendo click sobre el Token, éste se copia automáticamente al portapapeles, de este modo lo puede pegar y enviar mediante un e-mail, por ejemplo.
 
@@ -82,7 +102,9 @@ Para que un operador puede comenzar a ingresas sus dosis, debe tener un teléfon
 
 2. El operador debe validar sus credenciales. Puede utilizar una cuenta de servicios de google o puede crearse un usuario y password.
 
-3. Una vez validada su identidad, el operador debe ingresar su token: ![Token de operador](img/registro%20toek%20de%20operador.png)
+3. Una vez validada su identidad, el operador debe ingresar su token: 
+
+<img src="img/registro%20toek%20de%20operador.png" style="width:50%;margin-left: 50pt">
 
 4. Y presionar el botón "Ingresar como Operador"
 
