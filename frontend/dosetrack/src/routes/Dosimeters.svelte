@@ -175,7 +175,7 @@
     />
   {:catch error}
     {error.message}
-    no andó
+    Server offline
   {/await}
   <!-- Button trigger modal -->
   <button
@@ -206,7 +206,7 @@
     />
   {:catch error}
     {error.message}
-    no andó
+    Server offline
   {/await}
 
   <button
@@ -236,7 +236,7 @@
     />
   {:catch error}
     {error.message}
-    no andó
+    Server offline
   {/await}
   <!-- Button trigger modal -->
   <button

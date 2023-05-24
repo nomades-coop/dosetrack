@@ -106,7 +106,7 @@
     <TableOperatorsDasboard content={content(lista)} />
   {:catch error}
     {error.message}
-    no andó
+    Server offline
   {/await}
 </Section> -->
 

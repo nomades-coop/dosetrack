@@ -24,3 +24,7 @@ features = ["tera"]
 [dependencies.rocket]
 version = "0.5.0-rc.3"
 features = ["json"]
+
+[profile.release]
+strip = true  # Automatically strip symbols from the binary.
+lto = true    # Enable link-time optimizations.

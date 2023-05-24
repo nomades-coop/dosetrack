@@ -37,6 +37,10 @@ export const saveFilmDose = async (film_dose = null) => {
 
   try {
 
+    if (film_dose._id == "") {
+      delete film_dose._id
+    }
+
     response = await fetch(`${API_URL}/film_dose`, {
       method: "POST",
       headers: {
