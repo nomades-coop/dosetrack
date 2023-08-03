@@ -2,11 +2,11 @@
 // La idea sería obtener referencias de los empleados que 
 //se fueron creando en otros test
 
-@operator_id = 62eeb7ec0c11652e03b5e6b7
-@dose= 456.0
+@operator_id = 646b55b5e2d5733b14793d29
+@dose= 222
 @when=2022-12-31T03:00:00.000Z
-@company_id = 6425a424f245dec56f0a4f48
-@dosimeter_id = bdca535261245abfcd11aea3
+@company_id = 646b5566e2d5733b14793d27
+@dosimeter_id = 646b5be5e2d5733b14793d2b
 
 
 ### REQUESTS

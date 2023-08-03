@@ -14,7 +14,10 @@ use mongodb::{
 use crate::database;
 use crate::model::dosetrack::Dose;
 use crate::utils::GenericError;
+use rust_decimal::prelude::*;
+use rust_decimal_macros::dec;
 
+use super::registration::new;
 /*
 1. Listar todas las dosis
 2. listar las dosis por usuario
@@ -113,10 +116,19 @@ pub async fn create(
     mut new_dosis: Json<Dose>,
     database: &State<database::MongoDB>,
 ) -> Result<Json<Dose>, GenericError> {
+    if new_dosis.dose <= dec!(0) {
+        return Err(GenericError::new_from_json(
+            Status::BadRequest,
+            Json(doc! {
+                "error": "La dosis debe ser mayor a 0"
+            }),
+        ));
+    }
     let collection = database.collection::<Dose>("doses");
 
     if new_dosis._id.is_none() {
         new_dosis._id = Some(bson::oid::ObjectId::new());
+        new_dosis.dose = new_dosis.dose / dec!(1000);
         new_dosis.when = DateTime::now();
         let _result = collection.insert_one(new_dosis.deref(), None).await;
     }

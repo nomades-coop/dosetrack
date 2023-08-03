@@ -70,11 +70,12 @@
   };
 
   const sendData = () => {
-    let doseMsv = parseFloat(doseInput.value);
+    let doseMsv = parseInt(doseInput.value);
 
     if (!doseMsv) {
       doseDiv.classList.add("error");
       doseInput.focus();
+      toast.push("La dosis es inválida.");
       return;
     }
 
@@ -158,6 +159,7 @@
             id="dose"
             type="number"
             pattern="999.999"
+            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
             class="form-control"
             aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-lg"
@@ -165,7 +167,7 @@
           <span
             class="input-group-text"
             id="inputGroup-sizing-lg"
-            style="background-color: rgb(106 158 255);"><b>mSv</b></span
+            style="background-color: rgb(106 158 255);"><b>μSv</b></span
           >
         </div>
       </div>

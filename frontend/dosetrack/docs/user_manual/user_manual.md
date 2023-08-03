@@ -110,3 +110,26 @@ Para que un operador puede comenzar a ingresas sus dosis, debe tener un teléfon
 
 Si el token es correcto, ya puede comenzar a ingresar dosis al sistema.
 
+
+## Activar un Operador
+
+Un operador puede comenzar a registrar sus dosis usando su celular siempre y cuando haya sido registrado previamente como operador por un usuario administrador.
+
+Un operador puede registrar tanto la dosis recibidas como una fotografía del dosímetro al momento de registrar su dosis. Puede registrar tantas dosis como quiera, nunca puede eliminar una dosis previamente cargada. Sólo un administrador puede anular una dosis cargada erróneamente. Sin embargo los registros de dosis nunca se eliminan, sólo pueden ser revertidos por un administrador para que el sistema los ignore al momento de hacer informes y estadística. De esta manera el sistema es transparente y siempre se puede conocer el historial completo de dosis y registros, con o sin errores.
+
+
+Para activar la app en el celular de un operador, siga los pasos que se detallan a continuación.
+
+### Setup de la app para un nuevo operador
+
+1. Abra el navegador web de su teléfono
+2. Diríjase al sitio https://dosetrack-production.up.railway.app/#/dose/registration
+
+3. Ingrese sus credenciales. El operador puede usar las credenciales de Google (ya sea una cuenta personal o corporativa) o puede crear en ese momento un usuario y contraseña.
+
+<img src="img/operator_login_screen.png" style="width:50%;margin-left: 50pt">
+
+4. Complete el campo con el token que le asignó el administrador mediante un mensaje de texto o un email, etc.
+5. Presione el botón ingresar
+
+<img src="img/operator_input_token.png" style="width:50%;margin-left: 50pt">

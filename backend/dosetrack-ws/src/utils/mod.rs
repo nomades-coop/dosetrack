@@ -1,8 +1,14 @@
 use std::io::Cursor;
 
+use mongodb::{
+    bson,
+    bson::{doc, oid::ObjectId, DateTime, Document},
+    options::FindOptions,
+};
 use rocket::http::{ContentType, Status};
 use rocket::request::Request;
 use rocket::response::{self, Responder, Response};
+use rocket::serde::json::Json;
 
 #[derive(Debug)]
 pub struct GenericError {
@@ -15,6 +21,13 @@ impl GenericError {
         GenericError {
             status,
             json: String::from(data),
+        }
+    }
+
+    pub fn new_from_json(status: Status, data: Json<Document>) -> GenericError {
+        GenericError {
+            status,
+            json: data.to_string(),
         }
     }
 }
