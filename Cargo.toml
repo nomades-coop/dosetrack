@@ -1,2 +1,6 @@
 [workspace]
 members = ["backend/dosetrack-ws"]
+
+[profile.release]
+strip = true # Automatically strip symbols from the binary.
+lto = true   # Enable link-time optimizations.
