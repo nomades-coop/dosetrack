@@ -33,7 +33,12 @@
       });
 
       videoSource.srcObject = stream;
-      videoSource.play();
+      videoSource.setAttribute("playsinline", true);
+      videoSource.onloadedmetadata = function (e) {
+        videoSource.play();
+      };
+
+      // videoSource.play();
       loading = false;
       showIcon = true;
       cameraShot.classList.remove("d-none");
