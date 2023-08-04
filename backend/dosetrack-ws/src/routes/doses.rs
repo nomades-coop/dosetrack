@@ -43,11 +43,11 @@ pub async fn get_doses(
               "operator_id": ObjectId::parse_str(&operator_id).unwrap(),
             }
         },
-        doc! {
-            "$project": {
-              "picture": 0,
-            }
-        },
+        // doc! {
+        //     "$project": {
+        //       "picture": 0,
+        //     }
+        // },
         doc! {
             "$lookup": {
                 "from": "operators",
