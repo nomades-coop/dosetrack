@@ -89,7 +89,6 @@
 
     console.log("delete", id);
     const res = await fetch(`${API_URL}/operator/${id}`, fetchConfig);
-    console.log(res);
     modal.hide();
   };
 
@@ -109,7 +108,6 @@
 
     const json = await res.json();
     result = JSON.stringify(json);
-    console.log(result);
     promise = fetchOperators();
   };
 

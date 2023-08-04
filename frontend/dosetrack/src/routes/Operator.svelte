@@ -14,8 +14,6 @@
 
   onMount(async () => {
     Chart.register(...registerables);
-
-    console.log("mount", tableData);
   });
 
   const showChart = (labels, data) => {
@@ -57,16 +55,14 @@
         { dosimeter_id: { title: "", type: "_id" } },
         { when: { title: "Fecha", type: "date" } },
         { dosimeter: { title: "Dosímetro", type: "obj", field: "brand" } },
-
         { dose: { title: "Dosis", type: "str", align: "center" } },
+        { picture: { title: "Foto", type: "pic" } },
       ],
       rows: tableData,
     };
   };
 
   async function fetchDoses() {
-    console.log("params", params);
-
     const myHeaders = new Headers({
       "Content-Type": "application/json",
     });
@@ -94,7 +90,6 @@
       } else {
         operator = { name: "No hay dosis para el operador" };
       }
-      console.log("operator", operator);
       return tableData;
     } else {
       throw new Error("No se pudo obtener la lista de dosimetros");

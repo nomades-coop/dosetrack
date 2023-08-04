@@ -61,7 +61,7 @@
   const detail = (operator) => {
     // -- hace el dispatch
     operator = toObject(operator);
-    console.log("tableOperators", operator);
+
     push(`/operator/${operator.company_id.$oid}/${operator._id.$oid}`);
   };
 </script>
